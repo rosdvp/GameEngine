@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{fb7a6353-34aa-4cf7-b92b-c04af296a1b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render">
+      <UniqueIdentifier>{0bf2634b-0e18-4a28-88cf-4b82cf11afc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Input">
+      <UniqueIdentifier>{973f3920-f3d8-416a-9352-43e2593a530f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{47a446ab-1a72-4bd2-ae49-7ce8cfdb2b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Gameplay">
+      <UniqueIdentifier>{3c22e563-a0cd-4bc3-891b-6c66778727bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Gameplay">
+      <UniqueIdentifier>{82f52f26-7620-415f-a3c0-f468de2a4153}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math">
+      <UniqueIdentifier>{f51a9be5-11d9-474d-bc34-4c0e1baaf98b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{5d554a43-6ece-458c-a97e-e0047249ca99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{8af10854-14ad-4a69-92ee-cd7c84b2b748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{12a9ef95-9b12-4307-81a4-b9a1c4b0f469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Ecs">
+      <UniqueIdentifier>{8cd8fec1-649c-4dce-9ecd-ce8957464f9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Ecs">
+      <UniqueIdentifier>{0d25023b-c2f5-4060-8af9-5e585c312f60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\StdComps">
+      <UniqueIdentifier>{362d44fa-885c-4921-9950-6290ad7f7db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{0da39e27-6452-44a0-8a1a-f9815af044a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{afc2a26a-9d99-40ad-becd-99f69a9b09ce}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlahEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderModule.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderBackground.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShader.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="InputCodes.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InputModule.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="GameplayModule.h">
+      <Filter>Header Files\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="ISystem.h">
+      <Filter>Header Files\Gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="InputEvents.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsModule.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="EntitiesPool.h">
+      <Filter>Header Files\Ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Header Files\Ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayResize.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter.h">
+      <Filter>Header Files\Ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="CompPool.h">
+      <Filter>Header Files\Ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="EcsCore.h">
+      <Filter>Header Files\Ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterMask.h">
+      <Filter>Header Files\Ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComp.h">
+      <Filter>Header Files\StdComps</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderComp.h">
+      <Filter>Header Files\StdComps</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderDrawer.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCameraComp.h">
+      <Filter>Header Files\StdComps</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollisionComp.h">
+      <Filter>Header Files\StdComps</Filter>
+    </ClInclude>
+    <ClInclude Include="UiModule.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UiTextComp.h">
+      <Filter>Header Files\StdComps</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderModule.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderBackground.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShader.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="InputModule.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="GameplayModule.cpp">
+      <Filter>Source Files\Gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsModule.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="EntitiesPool.cpp">
+      <Filter>Source Files\Ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter.cpp">
+      <Filter>Source Files\Ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="EcsCore.cpp">
+      <Filter>Source Files\Ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderDrawer.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="CompPool.cpp">
+      <Filter>Source Files\Ecs</Filter>
+    </ClCompile>
+    <ClCompile Include="UiModule.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
