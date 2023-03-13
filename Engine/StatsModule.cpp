@@ -24,23 +24,48 @@ void StatsModule::Init(TimeModule* timeModule, EcsCore* ecs)
 {
 	_timeModule = timeModule;
 	_ecs = ecs;
-	ShowDisplay();
 	Logger::Debug("stats", "initialized");
 }
 
-void StatsModule::Run()
+void StatsModule::RunDisplay()
 {
 	if (!_isDisplaying)
 		return;
-
-	float ms = _timeModule->GetFrameDeltaSecs() * 1000;
-	int fps = static_cast<int>(1.0f / ms);
+	
+	int fps = static_cast<int>(1.0f / _timeModule->GetFrameDeltaSecs());
 
 	auto& text = _ecs->GetComp<UiTextComp>(_eDisplay);
-	text.Text = L"fps: " + std::to_wstring(fps) + L", ms: " + std::to_wstring(ms);
+	text.Text = L"fps: " + std::to_wstring(fps) +
+		L"\nms: " + std::to_wstring(_timeModule->GetFrameDeltaSecs() * 1000) +
+		L"\ngame: " + std::to_wstring(_gameplayMS * 1000) +
+		L"\nrender: " + std::to_wstring(_renderMS * 1000);
 }
 
-void StatsModule::ShowDisplay()
+void StatsModule::BeginGameplay()
+{
+	_gameplayStartTime = std::chrono::steady_clock::now();
+}
+
+void StatsModule::EndGameplay()
+{
+	auto currTime = std::chrono::steady_clock::now();
+	_gameplayMS = std::chrono::duration_cast<std::chrono::microseconds>(currTime - _gameplayStartTime).count()
+		/ 1000000.0f;
+}
+
+void StatsModule::BeginRender()
+{
+	_renderStartTime = std::chrono::steady_clock::now();
+}
+
+void StatsModule::EndRender()
+{
+	auto currTime = std::chrono::steady_clock::now();
+	_renderMS = std::chrono::duration_cast<std::chrono::microseconds>(currTime - _renderStartTime).count()
+		/ 1000000.0f;
+}
+
+void StatsModule::ShowDisplay(const Vector3& pos)
 {
 	if (_isDisplaying)
 		return;
@@ -49,12 +74,12 @@ void StatsModule::ShowDisplay()
 	_eDisplay = _ecs->CreateEntity();
 
 	auto& tf = _ecs->AddComp<TransformComp>(_eDisplay);
-	tf.Pos = { 0, 0, 0 };
+	tf.Pos = pos;
 	tf.Scale = { 100, 1, 1 };
 
 	auto& text = _ecs->AddComp<UiTextComp>(_eDisplay);
 	text.Font = L"Arial";
-	text.FontSize = 20;
+	text.FontSize = 10;
 }
 
 void StatsModule::HideDisplay()

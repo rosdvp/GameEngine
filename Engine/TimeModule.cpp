@@ -19,7 +19,7 @@ TimeModule::~TimeModule()
 void TimeModule::Init()
 {
 	_startTime = std::chrono::steady_clock::now();
-	_prevFrameTime = std::chrono::steady_clock::now();
+	_frameStartTime = std::chrono::steady_clock::now();
 
 	Logger::Debug("time module", "initialized");
 }
@@ -28,9 +28,9 @@ void TimeModule::Run()
 {
 	auto currTime = std::chrono::steady_clock::now();
 
-	_frameDeltaSecs = std::chrono::duration_cast<std::chrono::microseconds>(currTime - _prevFrameTime).count()
+	_frameDeltaSecs = std::chrono::duration_cast<std::chrono::microseconds>(currTime - _frameStartTime).count()
 		/ 1000000.0f;
-	_prevFrameTime = currTime;
+	_frameStartTime = currTime;
 
 	_totalSecs = std::chrono::duration_cast<std::chrono::microseconds>(currTime - _startTime).count()
 		/ 1000000.0f;

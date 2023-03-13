@@ -14,4 +14,6 @@ private:
 	const float _moveSpeed;
 
 	BlahEngine::Entity _eCamera {};
+
+	void SetDefaultPos(BlahEngine::TransformComp& tf);
 };

@@ -316,7 +316,7 @@ void RenderModule::DrawCamera(const TransformComp& transComp, RenderCameraComp& 
 				cameraComp.PerspectiveAngle,
 				static_cast<float>(_screenWidth) / static_cast<float>(_screenHeight),
 				0.01f,
-				100.0f
+				1000.0f
 			);
 
 			finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);

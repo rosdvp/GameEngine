@@ -41,7 +41,7 @@ bool Engine::Init()
 	
 	_gameplayModule->Init(this);
 
-	//_statsModule->Init(_timeModule, _gameplayModule->GetEcs());
+	_statsModule->Init(_timeModule, _gameplayModule->GetEcs());
 
 	_renderModule->Init(_window->GetHWND(), windowDesc.Width, windowDesc.Height, _timeModule, _gameplayModule->GetEcs());
 	_uiModule->Init(_renderModule->GetSwapChain(), _gameplayModule->GetEcs());
@@ -64,7 +64,6 @@ void Engine::Run()
 	while (true)
 	{
 		_timeModule->Run();
-		//_statsModule->Run();
 
 		_window->Run();
 
@@ -78,14 +77,20 @@ void Engine::Run()
 
 		_inputModule->Run();
 
+		_statsModule->BeginGameplay();
 		_gameplayModule->RunSystems();
+		_statsModule->EndGameplay();
 
 		_inputModule->ClearEvents();
 
+		_statsModule->BeginRender();
 		_renderModule->BeginDrawFrame();
 		_renderModule->DrawFrame();
 		_uiModule->DrawFrame();
 		_renderModule->EndDrawFrame();
+		_statsModule->EndRender();
+
+		_statsModule->RunDisplay();
 
 		for (auto entity : *_transformsFilter)
 			_gameplayModule->GetEcs()->GetComp<TransformComp>(entity).ResetIsChanged();
@@ -116,4 +121,9 @@ const InputModule* Engine::Input()
 const TimeModule* Engine::Time()
 {
 	return _timeModule;
+}
+
+IStatsModule* Engine::Stats()
+{
+	return _statsModule;
 }

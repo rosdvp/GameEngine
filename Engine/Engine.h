@@ -26,6 +26,7 @@ public:
 	IPhysicsModule* Physics();
 	const InputModule* Input();
 	const TimeModule* Time();
+	IStatsModule* Stats();
 
 private:
 	bool _isInited;

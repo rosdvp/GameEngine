@@ -10,10 +10,11 @@ void CameraSystem::Init()
 {
     auto eCamera = _ecs->CreateEntity();
     auto& tf = _ecs->AddComp<TransformComp>(eCamera);
-    tf.Pos = { 0, 0, -10 };
+    SetDefaultPos(tf);
+
     auto& cameraComp = _ecs->AddComp<RenderCameraComp>(eCamera);
     cameraComp.IsOrthographic = false;
-    cameraComp.PerspectiveAngle = 1.0f;
+    cameraComp.PerspectiveAngle = 0.7f;
 }
 
 void CameraSystem::Run()
@@ -41,12 +42,22 @@ void CameraSystem::Run()
     {
         tf.Rot.Y += _engine->Input()->GetMouseDeltaX() * rotDelta;
         tf.Rot.X += _engine->Input()->GetMouseDeltaY() * rotDelta;
+
+        if (tf.Rot.X < -89)
+            tf.Rot.X = -89;
+        else if (tf.Rot.X > 89)
+            tf.Rot.X = 89;
     }
 
     for (auto ev : _engine->Input()->GetEvents())
 		if (ev.IsDown && ev.Key == KEY_C)
 		{
-            tf.Pos = { 0, 60, 0 };
-            tf.Rot = { 90, 0, 0 };
+            SetDefaultPos(tf);
 		}
+}
+
+void CameraSystem::SetDefaultPos(TransformComp& tf)
+{
+    tf.Pos = { 0, 10, -80 };
+    tf.Rot = { 10, 0, 0 };
 }

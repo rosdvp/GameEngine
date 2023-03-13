@@ -9,7 +9,7 @@ using namespace BlahEngine;
 int main()
 {
 	Engine engine;
-
+	
 	engine.Gameplay()->AddSystem(new CameraSystem);
 	engine.Gameplay()->AddSystem(new PlayerSystem(
 		0, 10.0f, -10, 7, { 0.3f, 1.5f, 1.0f } ));

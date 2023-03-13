@@ -15,10 +15,10 @@ public:
 	unsigned int GetFramesCount() const;
 	float GetTotalSecs() const;
 	float GetFrameDeltaSecs() const;
-
+	
 private:
 	std::chrono::time_point<std::chrono::steady_clock> _startTime;
-	std::chrono::time_point<std::chrono::steady_clock> _prevFrameTime;
+	std::chrono::time_point<std::chrono::steady_clock> _frameStartTime;
 
 	unsigned int _framesCount;
 	float _totalSecs;

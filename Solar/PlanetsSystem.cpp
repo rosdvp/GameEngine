@@ -10,35 +10,51 @@ void PlanetsSystem::Init()
 {
 	auto sun = CreatePlanet(false, {}, 
 		{ 1, 0, 0 }, 0, 0, 
-		1, {1, 1, 1}, Color::Yellow()
+		1, {3, 3, 3}, Color::Yellow()
 	);
 	auto mercury = CreatePlanet(true, sun,
 		{ 1, 0, 0 }, 5, 20, 
-		0.9f, {0.5f,0.5f, 0.5f}, Color::Red()
+		1.2f, {0.5f,0.5f, 0.5f}, Color::Red()
 	);
 	auto venus = CreatePlanet(true, sun,
 		{ 1, 0, 0 }, 10, 17,
-		0.8f, { 1 ,1, 1 }, Color::Purple()
+		1.3f, { 1 ,1, 1 }, Color::Purple()
 	);
 	auto earth = CreatePlanet(true, sun,
 		{ 1, 0, 0 }, 15, 15,
-		0.7f, { 1 ,1, 1 }, Color::Blue()
+		1.4f, { 1 ,1, 1 }, Color::Blue()
 	);
 	auto moon = CreatePlanet(true, earth,
 		{ 1, 0, 0 }, 2.0f, 100,
-		0.6f, { 0.3f ,0.3f, 0.3f }, Color::Grey()
+		1.5f, { 0.3f ,0.3f, 0.3f }, Color::Grey()
 	);
 	auto mars = CreatePlanet(true, sun,
 		{ 1, 0, 0 }, 20, 10,
-		0.5f, { 1.1f,1.1f, 1.1f }, Color::Orange()
+		1.6f, { 1.1f,1.1f, 1.1f }, Color::Orange()
 	);
 	auto phobos = CreatePlanet(true, mars,
 		{ 1, 0, 0 }, 2.0f, 100,
-		0.4f, { 0.3f ,0.3f, 0.3f }, Color::Grey()
+		1.7f, { 0.3f ,0.3f, 0.3f }, Color::Grey()
 	);
 	auto deimos = CreatePlanet(true, mars,
 		{ 1, 0, 0 }, 3.0f, 50,
-		0.3f, { 0.3f ,0.3f, 0.3f }, Color::Grey()
+		1.8f, { 0.3f ,0.3f, 0.3f }, Color::Grey()
+	);
+	auto jupiter = CreatePlanet(true, sun,
+		{ 1, 0, 0 }, 25, 18,
+		1.9f, { 2.0f,2.0f, 2.0f }, Color(0.7f, 0.5f, 0.5f, 1.0f)
+	);
+	auto saturn = CreatePlanet(true, sun,
+		{ 1, 0, 0 }, 30, 30,
+		2.0f, { 2.0f,2.0f, 2.0f }, Color(0.5f, 0.5f, 0.7f, 1.0f)
+	);
+	auto uranus = CreatePlanet(true, sun,
+		{ 1, 0, 0 }, 37, 15,
+		2.1f, { 1.5f,1.5f, 1.5f }, Color(0.5f, 0.7f, 0.5f, 1.0f)
+	);
+	auto neptune = CreatePlanet(true, sun,
+		{ 1, 0, 0 }, 45, 25,
+		2.2f, { 1.3f,1.3f, 1.3f }, Color(0.3f, 0.3f, 0.3f, 1.0f)
 	);
 
 	_planetsFilter = _ecs->GetFilter(FilterMask().Inc<PlanetComp>().Inc<TransformComp>());
@@ -82,7 +98,7 @@ Entity PlanetsSystem::CreatePlanet(
 	planet.SelfRotateSpeed = selfRotateSpeed;
 
 	auto& render = _ecs->AddComp<RenderComp>(entity);
-	GeometryRenderBuilder::BuildSphere(render, 10, color);
+	GeometryRenderBuilder::BuildSphere(render, 20, color);
 	render.DrawerId = 0;
 	render.ShaderId = 0;
 	for (int i = 0; i < render.VerticesCount; i += 10)
