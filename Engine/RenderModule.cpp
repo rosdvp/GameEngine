@@ -10,12 +10,17 @@ using namespace DirectX;
 
 RenderModule::RenderModule() :
 	_timeModule(nullptr),
+	_ecs(nullptr),
 	_screenWidth(0),
 	_screenHeight(0),
 	_isInited(false),
-	_renderBackgroundDefault(nullptr),
-	_renderBackgroundCustom(nullptr)
-{}
+	_renderBackgroundCustom(nullptr),
+	_cameraFilter(nullptr),
+	_rendersFilter(nullptr)
+{
+	_renderBackgroundDefault = new RenderBackground();
+	_renderShaders.push_back(new RenderShader);
+}
 
 RenderModule::~RenderModule() noexcept(false)
 {
@@ -127,9 +132,36 @@ void RenderModule::Init(HWND hwnd, int screenWidth, int screenHeight,
 	Logger::Debug("render module", "render target is created");
 
 	//--------------------------------------------------
+	//creating depth stencil view (which is necessary for 3d objects render)
+
+	D3D11_TEXTURE2D_DESC depthStencilDesc {};
+	depthStencilDesc.Width = screenWidth;
+	depthStencilDesc.Height = screenHeight;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+
+	ID3D11Texture2D* depthStencilBuffer;
+	result = _device->CreateTexture2D(&depthStencilDesc, nullptr, &depthStencilBuffer);
+	if (FAILED(result))
+		throw std::exception("failed to create depth stencil buffer");
+
+	result = _device->CreateDepthStencilView(depthStencilBuffer, nullptr, _depthStencilView.GetAddressOf());
+	if (FAILED(result))
+		throw std::exception("failed to create depth stencil view");
+	depthStencilBuffer->Release();
+	depthStencilBuffer = nullptr;
+
+	//--------------------------------------------------
 	//create rasterizer state that defines what should be culled (without this clockwise indices order will not be render)
 	CD3D11_RASTERIZER_DESC rasterizerStateDesc = {};
-	rasterizerStateDesc.CullMode = D3D11_CULL_NONE;
+	rasterizerStateDesc.CullMode = D3D11_CULL_BACK;
 	rasterizerStateDesc.FillMode = D3D11_FILL_SOLID;
 	
 	result = _device->CreateRasterizerState(&rasterizerStateDesc, _rasterizerState.GetAddressOf());
@@ -146,34 +178,10 @@ void RenderModule::Init(HWND hwnd, int screenWidth, int screenHeight,
 
 	//--------------------------------------------------
 	//initializing default background
-	_renderBackgroundDefault = new RenderBackground();
 	_renderBackgroundDefault->Init(_device.Get(), _timeModule);
 
 	//--------------------------------------------------
 	//filling render frame dto
-	
-	/*
-	auto vectEye = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
-	auto vectAt = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	_renderFrameDto.ViewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
-	
-	_renderFrameDto.ProjMatrix = XMMatrixPerspectiveFovLH(
-		XM_PIDIV2, 
-		static_cast<float>(screenWidth) / static_cast<float>(screenHeight),
-		0.01f, 
-		100.0f);
-	*/
-	/*
-	auto vectEye = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	auto vectAt = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	_renderFrameDto.ViewMatrix = XMMatrixTranspose(XMMatrixLookAtLH(vectEye, vectAt, vectUp));
-	_renderFrameDto.ProjMatrix = XMMatrixTranspose(XMMatrixOrthographicLH(_screenWidth, _screenHeight, 0.0f, 1.0f));
-
-	_renderFrameDto.IsMatricesDirty = true;
-	*/
 
 	_cameraFilter = ecs->GetFilter(FilterMask().Inc<TransformComp>().Inc<RenderCameraComp>());
 	_rendersFilter = ecs->GetFilter(FilterMask().Inc<TransformComp>().Inc<RenderComp>());
@@ -200,8 +208,14 @@ void RenderModule::BeginDrawFrame()
 	viewport.TopLeftY = 0;
 	_context->RSSetViewports(1, &viewport);
 
-	_context->OMSetRenderTargets(1, _renderTargetView.GetAddressOf(), nullptr);
+	_context->OMSetRenderTargets(
+		1,
+		_renderTargetView.GetAddressOf(),
+		_depthStencilView.Get()
+	);
 	_context->RSSetState(_rasterizerState.Get());
+
+	_context->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void RenderModule::DrawFrame()
@@ -275,20 +289,38 @@ void RenderModule::DrawCamera(const TransformComp& transComp, RenderCameraComp& 
 
 	if (shouldUpdateBuffer || transComp.IsChanged() || cameraComp.IsChanged())
 	{
-		//auto vectEye = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-		//auto vectAt = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		//auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		XMMATRIX finalMatrix;
+		if (cameraComp.IsOrthographic)
+		{
+			auto vectEye = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, transComp.Pos.Z, 0.0f);
+			auto vectAt = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, 0.0f, 0.0f);
+			auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+			XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
 
-		auto vectEye = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, 1.0f, 0.0f);
-		auto vectAt = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, 0.0f, 0.0f);
-		auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+			float width = max(_screenWidth / cameraComp.OrthoZoom, 1.0f);
+			float height = max(_screenHeight / cameraComp.OrthoZoom, 1.0f);
+			XMMATRIX projMatrix = XMMatrixOrthographicLH(width, height, 0.0f, 100.0f);
 
-		float width = max(_screenWidth / cameraComp.OrthoZoom, 1.0f);
-		float height = max(_screenHeight / cameraComp.OrthoZoom, 1.0f);
+			finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+		}
+		else
+		{
+			Vector3 vAt = transComp.GetForward() + transComp.Pos;
 
-		XMMATRIX viewMatrix = XMMatrixTranspose(XMMatrixLookAtRH(vectEye, vectAt, vectUp));
-		XMMATRIX projMatrix = XMMatrixTranspose(XMMatrixOrthographicRH(width, height, 0.0f, 1.0f));
-		XMMATRIX finalMatrix = viewMatrix * projMatrix;
+			auto vectEye = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, transComp.Pos.Z, 0.0f);
+			auto vectAt = XMVectorSet(vAt.X, vAt.Y, vAt.Z, 0.0f);
+			auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+			XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
+
+			XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(
+				cameraComp.PerspectiveAngle,
+				static_cast<float>(_screenWidth) / static_cast<float>(_screenHeight),
+				0.01f,
+				100.0f
+			);
+
+			finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+		}
 
 		_context->UpdateSubresource(
 			cameraComp.ConstantBuffer.Get(),

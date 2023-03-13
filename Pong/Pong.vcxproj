@@ -135,7 +135,6 @@
   <ItemGroup>
     <ClCompile Include="BallSystem.cpp" />
     <ClCompile Include="CameraSystem.cpp" />
-    <ClCompile Include="MatrixRenderShader.cpp" />
     <ClCompile Include="PlayerSystem.cpp" />
     <ClCompile Include="Pong.cpp" />
     <ClCompile Include="ScoreSystem.cpp" />
@@ -143,11 +142,9 @@
   <ItemGroup>
     <ClInclude Include="BallSystem.h" />
     <ClInclude Include="CameraSystem.h" />
-    <ClInclude Include="MatrixRenderShader.h" />
     <ClInclude Include="PlayerSystem.h" />
     <ClInclude Include="ScoreIncreaseCmd.h" />
     <ClInclude Include="ScoreSystem.h" />
-    <ClInclude Include="SquareRenderBuilder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

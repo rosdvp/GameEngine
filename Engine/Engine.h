@@ -5,6 +5,7 @@
 #include "Logger.h"
 #include "PhysicsModule.h"
 #include "RenderModule.h"
+#include "StatsModule.h"
 #include "TimeModule.h"
 #include "UiModule.h"
 #include "Window.h"
@@ -36,6 +37,7 @@ private:
 	UiModule* _uiModule;
 	InputModule* _inputModule;
 	TimeModule* _timeModule;
+	StatsModule* _statsModule;
 	GameplayModule* _gameplayModule;
 	PhysicsModule* _physicsModule;
 

@@ -12,6 +12,8 @@ public:
 
 	void Init();
 
+	void Run();
+
 	void AddEvent(const UINT& msg, WPARAM wParam, LPARAM lParam);
 	void ClearEvents();
 
@@ -22,11 +24,17 @@ public:
 	bool IsKeyDown(EKeyCode key) const;
 	bool IsKeyUp(EKeyCode key) const;
 
+	bool IsMouseMoved() const;
+	int GetMouseDeltaX() const;
+	int GetMouseDeltaY() const;
+
 private:
 	RECT _winRect;
-
+	
 	int _mouseX;
 	int _mouseY;
+	int _mousePrevX;
+	int _mousePrevY;
 
 	int _isMouseWheelChanged;
 	int _mouseWheel;

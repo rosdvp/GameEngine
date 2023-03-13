@@ -48,6 +48,7 @@ private:
 	ComPtr<ID3D11DeviceContext> _context;
 	ComPtr<IDXGISwapChain> _swapChain;
 	ComPtr<ID3D11RenderTargetView> _renderTargetView;
+	ComPtr<ID3D11DepthStencilView> _depthStencilView;
 	ComPtr<ID3D11RasterizerState> _rasterizerState;
 	
 	RenderBackground* _renderBackgroundDefault;

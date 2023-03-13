@@ -1,7 +1,7 @@
 #include "BallSystem.h"
 
+#include "GeometryRenderBuilder.h"
 #include "ScoreIncreaseCmd.h"
-#include "SquareRenderBuilder.h"
 
 using namespace BlahEngine;
 
@@ -26,7 +26,9 @@ void BallSystem::Init()
 	_ecs->AddComp<BoxCollisionComp>(_entity);
 
 	auto& render = _ecs->AddComp<RenderComp>(_entity);
-	SquareRenderBuilder::Build(render);
+	GeometryRenderBuilder::BuildSquare(render, Color::White());
+	render.DrawerId = 0;
+	render.ShaderId = 0;
 
 	_dir = { -1, -1, 0 };
 }

@@ -17,7 +17,7 @@ private:
 	const float _posX;
 	const BlahEngine::Vector3 _platformScale { 0.3f, 1.5f, 1};
 
-	BlahEngine::Entity _player {};
+	BlahEngine::Entity _ePlayer {};
 
 	BlahEngine::EKeyCode _keyMoveUp;
 	BlahEngine::EKeyCode _keyMoveDown;

@@ -21,9 +21,6 @@
     <ClCompile Include="PlayerSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MatrixRenderShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CameraSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,12 +33,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PlayerSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SquareRenderBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MatrixRenderShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CameraSystem.h">

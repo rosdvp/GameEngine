@@ -75,8 +75,10 @@ void RenderDrawer::DrawEntity(ID3D11Device* device, ID3D11DeviceContext* context
 	if (shouldUpdateMatrix || transComp.IsChanged())
 	{
 		auto matrix =
-			XMMatrixTranspose(XMMatrixTranslation(transComp.Pos.X, transComp.Pos.Y, transComp.Pos.Z)) *
-			XMMatrixTranspose(XMMatrixScaling(transComp.Scale.X, transComp.Scale.Y, transComp.Scale.Z));
+			XMMatrixScaling(transComp.Scale.X, transComp.Scale.Y, transComp.Scale.Z) *
+			XMMatrixRotationRollPitchYaw(transComp.Rot.X, transComp.Rot.Y, transComp.Rot.Z) *
+			XMMatrixTranslation(transComp.Pos.X, transComp.Pos.Y, transComp.Pos.Z);
+		matrix = XMMatrixTranspose(matrix);
 		context->UpdateSubresource(
 			renderComp.MatrixConstantBuffer.Get(),
 			0,

@@ -1,7 +1,6 @@
 #include "BallSystem.h"
 #include "BlahEngine.h"
 #include "CameraSystem.h"
-#include "MatrixRenderShader.h"
 #include "PlayerSystem.h"
 #include "ScoreSystem.h"
 
@@ -10,8 +9,6 @@ using namespace BlahEngine;
 int main()
 {
 	Engine engine;
-
-	engine.Render()->AddRenderShader(new MatrixRenderShader);
 
 	engine.Gameplay()->AddSystem(new CameraSystem);
 	engine.Gameplay()->AddSystem(new PlayerSystem(

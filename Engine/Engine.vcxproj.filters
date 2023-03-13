@@ -58,6 +58,18 @@
     <Filter Include="Source Files\UI">
       <UniqueIdentifier>{afc2a26a-9d99-40ad-becd-99f69a9b09ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Helpers">
+      <UniqueIdentifier>{1f3bed04-2aae-4b99-beed-0b7d53595b03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helpers">
+      <UniqueIdentifier>{5b6b2ff5-b177-4ab5-b2b6-c5ba62c0c468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Stats">
+      <UniqueIdentifier>{0f9fd2de-aabc-4bfd-801f-454aa38252cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Stats">
+      <UniqueIdentifier>{58773f54-e8fa-482c-aa38-9066b5e72894}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -150,6 +162,15 @@
     <ClInclude Include="UiTextComp.h">
       <Filter>Header Files\StdComps</Filter>
     </ClInclude>
+    <ClInclude Include="GeometryRenderBuilder.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="StatsModule.h">
+      <Filter>Header Files\Stats</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -205,6 +226,12 @@
     </ClCompile>
     <ClCompile Include="UiModule.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryRenderBuilder.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="StatsModule.cpp">
+      <Filter>Source Files\Stats</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

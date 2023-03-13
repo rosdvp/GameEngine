@@ -7,7 +7,7 @@ class RenderShader
 public:
 	virtual ~RenderShader() = default;
 
-	virtual void Init(ID3D11Device* device) = 0;
+	virtual void Init(ID3D11Device* device);
 
 	void ApplyToContext(ID3D11DeviceContext* context);
 

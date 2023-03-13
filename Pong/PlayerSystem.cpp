@@ -1,6 +1,6 @@
 #include "PlayerSystem.h"
 
-#include "SquareRenderBuilder.h"
+#include "GeometryRenderBuilder.h"
 
 using namespace BlahEngine;
 
@@ -20,14 +20,17 @@ void PlayerSystem::Init()
 {
 	Vector3 startPos{ _posX, 0, 0};
 
-	_player = _ecs->CreateEntity();
+	_ePlayer = _ecs->CreateEntity();
 
-	auto& tf = _ecs->AddComp<TransformComp>(_player);
+	auto& tf = _ecs->AddComp<TransformComp>(_ePlayer);
 	tf.Pos = startPos;
 	tf.Scale = _platformScale;
 
-	_ecs->AddComp<BoxCollisionComp>(_player);
-	SquareRenderBuilder::Build(_ecs->AddComp<RenderComp>(_player));
+	_ecs->AddComp<BoxCollisionComp>(_ePlayer);
+	auto& renderComp = _ecs->AddComp<RenderComp>(_ePlayer);
+	GeometryRenderBuilder::BuildSquare(renderComp, Color::White());
+	renderComp.DrawerId = 0;
+	renderComp.ShaderId = 0;
 }
 
 void PlayerSystem::Run()
@@ -36,7 +39,7 @@ void PlayerSystem::Run()
 
 	if (_engine->Input()->IsKeyDown(_keyMoveUp))
 	{
-		auto& tf = _ecs->GetComp<TransformComp>(_player);
+		auto& tf = _ecs->GetComp<TransformComp>(_ePlayer);
 		float delta = _moveSpeed * deltaTime;
 		if (tf.Pos.Y + delta > _borderPosY)
 			tf.Pos.Y = _borderPosY;
@@ -45,7 +48,7 @@ void PlayerSystem::Run()
 	}
 	if (_engine->Input()->IsKeyDown(_keyMoveDown))
 	{
-		auto& tf = _ecs->GetComp<TransformComp>(_player);
+		auto& tf = _ecs->GetComp<TransformComp>(_ePlayer);
 		float delta = _moveSpeed * deltaTime;
 		if (tf.Pos.Y - delta < -_borderPosY)
 			tf.Pos.Y = -_borderPosY;

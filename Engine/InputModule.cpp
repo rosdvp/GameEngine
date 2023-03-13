@@ -22,41 +22,28 @@ void InputModule::Init()
 	_keysDownMap = new bool[KEY_MAX];
 	for (int i = 0; i < KEY_MAX; i++)
 		_keysDownMap[i] = false;
+	
+	POINT mousePos;
+	GetCursorPos(&mousePos);
+	_mouseX = mousePos.x;
+	_mouseY = mousePos.y;
+	_mousePrevX = _mouseX;
+	_mousePrevY = _mouseY;
 
 	Logger::Debug("input module", "initialized");
 }
 
-void InputModule::SetWinRect(const RECT& winRect)
-{
-	_winRect.left = winRect.left;
-	_winRect.right = winRect.right;
-	_winRect.top = winRect.top;
-	_winRect.bottom = winRect.bottom;
-}
-
-const InputEventsCollection& InputModule::GetEvents() const
-{
-	return _events;
-}
-
-
-bool InputModule::IsKeyDown(EKeyCode key) const
-{
-	return _keysDownMap[key];
-}
-
-bool InputModule::IsKeyUp(EKeyCode key) const
-{
-	return _keysDownMap[key];
-}
-
-void InputModule::AddEvent(const UINT& msg, WPARAM wParam, LPARAM lParam)
+void InputModule::Run()
 {
 	POINT mousePos;
 	GetCursorPos(&mousePos);
 	_mouseX = mousePos.x - _winRect.left;
 	_mouseY = mousePos.y - _winRect.top;
+}
 
+
+void InputModule::AddEvent(const UINT& msg, WPARAM wParam, LPARAM lParam)
+{
 	EKeyCode key;
 	bool isDown;
 	wchar_t buffer[1]{ ' ' };
@@ -82,8 +69,48 @@ void InputModule::AddEvent(const UINT& msg, WPARAM wParam, LPARAM lParam)
 
 void InputModule::ClearEvents()
 {
+	_mousePrevX = _mouseX;
+	_mousePrevY = _mouseY;
+
 	_isMouseWheelChanged = false;
 	_events.Clear();
+}
+
+void InputModule::SetWinRect(const RECT& winRect)
+{
+	_winRect.left = winRect.left;
+	_winRect.right = winRect.right;
+	_winRect.top = winRect.top;
+	_winRect.bottom = winRect.bottom;
+}
+
+
+const InputEventsCollection& InputModule::GetEvents() const
+{
+	return _events;
+}
+
+bool InputModule::IsKeyDown(EKeyCode key) const
+{
+	return _keysDownMap[key];
+}
+
+bool InputModule::IsKeyUp(EKeyCode key) const
+{
+	return _keysDownMap[key];
+}
+
+bool InputModule::IsMouseMoved() const
+{
+	return _mouseX != _mousePrevX || _mouseY != _mousePrevY;
+}
+int InputModule::GetMouseDeltaX() const
+{
+	return _mouseX - _mousePrevX;
+}
+int InputModule::GetMouseDeltaY() const
+{
+	return _mouseY - _mousePrevY;
 }
 
 

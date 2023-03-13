@@ -18,7 +18,7 @@ void ResizeByNewWithCopyAssign(T** src, int oldSize, int newSize, T&& defaultVal
 {
 	T* temp = new T[newSize];
 	std::copy_n(*src, oldSize < newSize ? oldSize : newSize, temp);
-	std::fill_n(temp, newSize - oldSize, defaultValue);
+	std::fill_n(temp + oldSize, newSize - oldSize, defaultValue);
 	delete[] * src;
 	*src = temp;
 }

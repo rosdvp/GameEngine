@@ -11,11 +11,19 @@ public:
 	Vector3 Scale{ 1, 1, 1 };
 
 
-	void Release()
+	Vector3 GetForward() const
 	{
-		Pos = { 0, 0, 0 };
-		Rot = { 0, 0, 0 };
-		Scale = { 1, 1, 1 };
+		return Vector3{ 0, 0, 1 }.GetRotX(Rot.X).GetRotY(Rot.Y).GetRotZ(Rot.Z);
+	}
+
+	Vector3 GetRight() const
+	{
+		return Vector3{ 1, 0, 0 }.GetRotX(Rot.X).GetRotY(Rot.Y).GetRotZ(Rot.Z);
+	}
+
+	Vector3 GetUp() const
+	{
+		return Vector3{ 0, 1, 0 }.GetRotX(Rot.X).GetRotY(Rot.Y).GetRotZ(Rot.Z);
 	}
 
 
@@ -35,6 +43,13 @@ public:
 		std::size_t h2 = std::hash<Vector3>{}(Rot);
 		std::size_t h3 = std::hash<Vector3>{}(Scale);
 		return (h1 ^ (h2 << 1) >> 1) ^ (h3 << 1);
+	}
+
+	void Release()
+	{
+		Pos = { 0, 0, 0 };
+		Rot = { 0, 0, 0 };
+		Scale = { 1, 1, 1 };
 	}
 
 private:

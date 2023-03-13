@@ -3,6 +3,8 @@
 
 using namespace BlahEngine;
 
+const float  PI = 3.14159265358979f;
+
 Vector3::Vector3():
 	X(0),
 	Y(0),
@@ -25,16 +27,41 @@ Vector3::Vector3(Vector3&& other) noexcept:
 
 Vector3::~Vector3() {}
 
-float Vector3::Length()
+float Vector3::Length() const
 {
 	return sqrt(X * X + Y * Y + Z * Z);
 }
 
-Vector3 Vector3::Norm()
+Vector3 Vector3::GetNorm() const
 {
 	float length = Length();
 	return { X / length, Y / length, Z / length };
 }
+
+Vector3 Vector3::GetRotX(float angle) const
+{
+	float rad = angle * PI  / 180.0f;
+	float cosA = cosf(rad);
+	float sinA = sinf(rad);
+	return { X, Y * cosA - Z * sinA, Y * sinA + Z * cosA };
+}
+
+Vector3 Vector3::GetRotY(float angle) const
+{
+	float rad = angle * PI / 180.0f;
+	float cosA = cosf(rad);
+	float sinA = sinf(rad);
+	return { X * cosA + Z * sinA, Y, -X * sinA + Z * cosA };
+}
+
+Vector3 Vector3::GetRotZ(float angle) const
+{
+	float rad = angle * PI / 180.0f;
+	float cosA = cosf(rad);
+	float sinA = sinf(rad);
+	return { X * cosA - Y * sinA, X * sinA + Y * cosA, Z };
+}
+
 
 Vector3& Vector3::operator=(const Vector3& other)
 {

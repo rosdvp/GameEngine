@@ -20,10 +20,13 @@ public:
 	~Vector3();
 
 
-	float Length();
+	float Length() const;
 
-	Vector3 Norm();
+	Vector3 GetNorm() const;
 
+	Vector3 GetRotX(float angle) const;
+	Vector3 GetRotY(float angle) const;
+	Vector3 GetRotZ(float angle) const;
 
 	Vector3& operator=(const Vector3& other);
 	Vector3& operator=(Vector3&& other) noexcept;
@@ -47,6 +50,11 @@ public:
 
 	friend Vector3 operator*(const Vector3& a, float k);
 	friend Vector3 operator/(const Vector3& a, float k);
+
+	friend std::ostream& operator<<(std::ostream& os, const Vector3 v)
+	{
+		return os << "(" << v.X << ", " << v.Y << ", " << v.Z << ")";
+	}
 
 private:
 	static constexpr float EQUALITY_TOLERANCE = 0.0001f;

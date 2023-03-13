@@ -39,7 +39,7 @@ bool PhysicsModule::IsBlockAny(Entity entity, PhysicsBlockData& outData)
 			if (IsBoxBoxIntersected(tfA, boxA, tfB, boxB))
 			{
 				outData.Ent = ent;
-				outData.DirToEnt = (tfA.Pos - tfB.Pos).Norm();
+				outData.DirToEnt = (tfA.Pos - tfB.Pos).GetNorm();
 				return true;
 			}
 		}

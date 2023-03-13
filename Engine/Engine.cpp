@@ -11,6 +11,7 @@ Engine::Engine() :
 	_uiModule(new UiModule),
 	_inputModule(new InputModule),
 	_timeModule(new TimeModule),
+	_statsModule(new StatsModule),
 	_gameplayModule(new GameplayModule),
 	_physicsModule(new PhysicsModule),
 	_transformsFilter(nullptr) {}
@@ -23,6 +24,7 @@ Engine::~Engine()
 	delete _gameplayModule;
 	delete _window;
 	delete _inputModule;
+	delete _statsModule;
 	delete _timeModule;
 }
 
@@ -38,6 +40,8 @@ bool Engine::Init()
 	_window->AttachInput(_inputModule);
 	
 	_gameplayModule->Init(this);
+
+	//_statsModule->Init(_timeModule, _gameplayModule->GetEcs());
 
 	_renderModule->Init(_window->GetHWND(), windowDesc.Width, windowDesc.Height, _timeModule, _gameplayModule->GetEcs());
 	_uiModule->Init(_renderModule->GetSwapChain(), _gameplayModule->GetEcs());
@@ -60,6 +64,7 @@ void Engine::Run()
 	while (true)
 	{
 		_timeModule->Run();
+		//_statsModule->Run();
 
 		_window->Run();
 
@@ -70,6 +75,8 @@ void Engine::Run()
 			break;
 
 		if (_window->IsResize()) { }
+
+		_inputModule->Run();
 
 		_gameplayModule->RunSystems();
 
