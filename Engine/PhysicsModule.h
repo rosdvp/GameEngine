@@ -1,40 +1,26 @@
 #pragma once
 
-#include "EcsCore.h"
-#include "TransformComp.h"
-#include "BoxCollisionComp.h"
+#include "Vector3.h"
 
 namespace BlahEngine
 {
-struct PhysicsBlockData;
+struct BoxCollisionComp;
+struct TransformComp;
 
-class IPhysicsModule
-{
-public:
-	virtual ~IPhysicsModule() = default;
-
-	virtual bool IsBlockAny(Entity entity) = 0;
-	virtual bool IsBlockAny(Entity entity, PhysicsBlockData& outData) = 0;
-
-	virtual bool TryMove(Entity entity, const Vector3& deltaPos) = 0;
-};
-
-class PhysicsModule : virtual public IPhysicsModule
+class PhysicsModule
 {
 public:
 	PhysicsModule() = default;
-	~PhysicsModule() override;
+	~PhysicsModule();
+	
+	void Init(entt::registry* ecs);
 
-	void Init(EcsCore* ecs);
+	void AdjustChildrenTransforms();
 
-	bool IsBlockAny(Entity entity) override;
-	bool IsBlockAny(Entity entity, PhysicsBlockData& outData) override;
-
-	bool TryMove(Entity entity, const Vector3& deltaPos) override;
+	void RunCollisions();
 
 private:
-	EcsCore* _ecs;
-	Filter* _collisionsFilter;
+	entt::registry* _ecs;
 
 	bool IsBoxBoxIntersected(
 		const TransformComp& tfA, const BoxCollisionComp& boxA,
@@ -43,11 +29,5 @@ private:
 	Vector3 GetBoxBoxIntersectDir(
 		const Vector3& posA, const Vector3& sizeA,
 		const Vector3& posB, const Vector3 sizeB);
-};
-
-struct PhysicsBlockData
-{
-	Entity Ent;
-	Vector3 DirToEnt;
 };
 }

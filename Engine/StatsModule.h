@@ -1,10 +1,10 @@
 #pragma once
-#include "EcsCore.h"
-#include "TimeModule.h"
-#include "Vector3.h"
 
 namespace BlahEngine
 {
+class TimeModule;
+struct Vector3;
+
 class IStatsModule
 {
 public:
@@ -18,12 +18,14 @@ public:
 	StatsModule();
 	~StatsModule();
 
-	void Init(TimeModule* timeModule, EcsCore* ecs);
+	void Init(entt::registry* ecs, const TimeModule* timeModule);
 
-	void RunDisplay();
+	void Run();
 
 	void BeginGameplay();
 	void EndGameplay();
+	void BeginPhysics();
+	void EndPhysics();
 	void BeginRender();
 	void EndRender();
 
@@ -31,15 +33,16 @@ public:
 	void HideDisplay() override;
 
 private:
-	TimeModule* _timeModule;
-	EcsCore* _ecs;
+	entt::registry* _ecs;
+	const TimeModule* _timeModule;
 
 	std::chrono::time_point<std::chrono::steady_clock> _gameplayStartTime;
 	float _gameplayMS;
+	std::chrono::time_point<std::chrono::steady_clock> _physicsStartTime;
+	float _physicsMS;
 	std::chrono::time_point<std::chrono::steady_clock> _renderStartTime;
 	float _renderMS;
-
-	bool _isDisplaying;
-	Entity _eDisplay;
+	
+	entt::entity _entDisplay;
 };
 }

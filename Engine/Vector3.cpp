@@ -79,14 +79,14 @@ Vector3& Vector3::operator=(Vector3&& other) noexcept
 	return *this;
 }
 
-bool Vector3::operator==(const Vector3& other)
+bool Vector3::operator==(const Vector3& other) const
 {
 	return abs(X - other.X) <= EQUALITY_TOLERANCE &&
 		abs(Y - other.Y) <= EQUALITY_TOLERANCE &&
 		abs(Z - other.Z) <= EQUALITY_TOLERANCE;
 }
 
-bool Vector3::operator!=(const Vector3& other)
+bool Vector3::operator!=(const Vector3& other) const
 {
 	return !(*this == other);
 }

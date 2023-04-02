@@ -13,27 +13,21 @@ RenderModule::RenderModule() :
 	_ecs(nullptr),
 	_screenWidth(0),
 	_screenHeight(0),
-	_isInited(false),
-	_renderBackgroundCustom(nullptr),
-	_cameraFilter(nullptr),
-	_rendersFilter(nullptr)
+	_isInited(false)
 {
-	_renderBackgroundDefault = new RenderBackground();
-	_renderShaders.push_back(new RenderShader);
+	_renderBackgroundDefault = std::make_unique<RenderBackground>();
+	_renderShaders.push_back(std::make_unique<RenderShader>());
+	_renderDrawers.push_back(std::make_unique<RenderDrawer>());
 }
 
 RenderModule::~RenderModule() noexcept(false)
-{
-	for (auto s : _renderShaders)
-		delete s;
-	delete _renderBackgroundDefault;
-
+{								   
 	Logger::Debug("render module", "destroyed");
 }
 
 
-void RenderModule::Init(HWND hwnd, int screenWidth, int screenHeight, 
-	const TimeModule* timeModule, EcsCore* ecs)
+void RenderModule::Init(entt::registry* ecs, const TimeModule* timeModule,
+	HWND hwnd, int screenWidth, int screenHeight)
 {
 	Logger::Debug("render module", "initializing");
 
@@ -173,7 +167,7 @@ void RenderModule::Init(HWND hwnd, int screenWidth, int screenHeight,
 	//--------------------------------------------------
 	//compiling shaders
 
-	for (auto s : _renderShaders)
+	for (auto& s : _renderShaders)
 		s->Init(_device.Get());
 
 	//--------------------------------------------------
@@ -181,10 +175,6 @@ void RenderModule::Init(HWND hwnd, int screenWidth, int screenHeight,
 	_renderBackgroundDefault->Init(_device.Get(), _timeModule);
 
 	//--------------------------------------------------
-	//filling render frame dto
-
-	_cameraFilter = ecs->GetFilter(FilterMask().Inc<TransformComp>().Inc<RenderCameraComp>());
-	_rendersFilter = ecs->GetFilter(FilterMask().Inc<TransformComp>().Inc<RenderComp>());
 
 	_isInited = true;
 	Logger::Debug("render module", "initialized");
@@ -194,6 +184,26 @@ IDXGISwapChain* RenderModule::GetSwapChain() const
 {
 	return _swapChain.Get();
 }
+
+
+void RenderModule::SetRenderBackground(RenderBackground&& background)
+{
+	if (!_isInited)
+		throw std::exception("render module is not initialized");
+
+	background.Init(_device.Get(), _timeModule);
+	_renderBackgroundCustom = std::make_unique<RenderBackground>(background);
+}
+
+void RenderModule::AddRenderShader(RenderShader&& shader)
+{
+	if (!_isInited)
+		throw std::exception("render module is not initialized");
+
+	shader.Init(_device.Get());
+	_renderShaders.push_back(std::make_unique<RenderShader>(shader));
+}
+
 
 void RenderModule::BeginDrawFrame()
 {
@@ -225,22 +235,15 @@ void RenderModule::DrawFrame()
 		: _renderBackgroundDefault)
 		->DrawFrame(_context.Get(), _renderTargetView.Get());
 
-	for (auto entity : *_cameraFilter)
+	DrawCamera();
+	
+	auto view = _ecs->view<const TransformComp, RenderComp>();
+	for (auto ent : view)
 	{
-		auto& transComp = _ecs->GetComp<TransformComp>(entity);
-		auto& cameraComp = _ecs->GetComp<RenderCameraComp>(entity);
-		DrawCamera(transComp, cameraComp);
-	}
+		auto [tf, render] = view.get<const TransformComp, RenderComp>(ent);
 
-	for (auto entity : *_rendersFilter)
-	{
-		auto& transComp = _ecs->GetComp<TransformComp>(entity);
-		auto& renderComp = _ecs->GetComp<RenderComp>(entity);
-
-		auto shader = _renderShaders[renderComp.ShaderId];
-		shader->ApplyToContext(_context.Get());
-
-		_renderDrawer.DrawEntity(_device.Get(), _context.Get(), transComp, renderComp);
+		_renderShaders[render.ShaderId]->ApplyToContext(_context.Get());
+		_renderDrawers[render.DrawerId]->Draw(_device.Get(), _context.Get(), tf, render);
 	}
 }
 
@@ -251,87 +254,80 @@ void RenderModule::EndDrawFrame()
 }
 
 
-void RenderModule::SetRenderBackground(RenderBackground* background)
+
+void RenderModule::DrawCamera()
 {
-	if (!_isInited)
-		throw std::exception("render module is not initialized");
+	auto view = _ecs->view<const TransformComp, RenderCameraComp>();
 
-	background->Init(_device.Get(), _timeModule);
-	_renderBackgroundCustom = background;
-}
-
-void RenderModule::AddRenderShader(RenderShader* shader)
-{
-	_renderShaders.push_back(shader);
-}
-
-
-void RenderModule::DrawCamera(const TransformComp& transComp, RenderCameraComp& cameraComp)
-{
-	bool shouldUpdateBuffer = false;
-	if (cameraComp.ConstantBuffer.Get() == nullptr)
+	for (auto entity : view)
 	{
-		D3D11_BUFFER_DESC constantBufferDesc = {};
-		constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		constantBufferDesc.ByteWidth = sizeof(XMMATRIX);
-		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		constantBufferDesc.CPUAccessFlags = 0;
+		auto [tf, camera] = view.get<const TransformComp, RenderCameraComp>(entity);
 
-		HRESULT result = _device->CreateBuffer(
-			&constantBufferDesc,
-			nullptr,
-			cameraComp.ConstantBuffer.GetAddressOf());
-		if (FAILED(result))
-			throw std::exception("failed to create camera constant buffer");
-
-		shouldUpdateBuffer = true;
-	}
-
-	if (shouldUpdateBuffer || transComp.IsChanged() || cameraComp.IsChanged())
-	{
-		XMMATRIX finalMatrix;
-		if (cameraComp.IsOrthographic)
+		bool shouldUpdateBuffer = false;
+		if (camera.ConstantBuffer.Get() == nullptr)
 		{
-			auto vectEye = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, transComp.Pos.Z, 0.0f);
-			auto vectAt = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, 0.0f, 0.0f);
-			auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-			XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
+			D3D11_BUFFER_DESC constantBufferDesc = {};
+			constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+			constantBufferDesc.ByteWidth = sizeof(XMMATRIX);
+			constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			constantBufferDesc.CPUAccessFlags = 0;
 
-			float width = max(_screenWidth / cameraComp.OrthoZoom, 1.0f);
-			float height = max(_screenHeight / cameraComp.OrthoZoom, 1.0f);
-			XMMATRIX projMatrix = XMMatrixOrthographicLH(width, height, 0.0f, 100.0f);
+			HRESULT result = _device->CreateBuffer(
+				&constantBufferDesc,
+				nullptr,
+				camera.ConstantBuffer.GetAddressOf());
+			if (FAILED(result))
+				throw std::exception("failed to create camera constant buffer");
 
-			finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
-		}
-		else
-		{
-			Vector3 vAt = transComp.GetForward() + transComp.Pos;
-
-			auto vectEye = XMVectorSet(transComp.Pos.X, transComp.Pos.Y, transComp.Pos.Z, 0.0f);
-			auto vectAt = XMVectorSet(vAt.X, vAt.Y, vAt.Z, 0.0f);
-			auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-			XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
-
-			XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(
-				cameraComp.PerspectiveAngle,
-				static_cast<float>(_screenWidth) / static_cast<float>(_screenHeight),
-				0.01f,
-				1000.0f
-			);
-
-			finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+			shouldUpdateBuffer = true;
 		}
 
-		_context->UpdateSubresource(
-			cameraComp.ConstantBuffer.Get(),
-			0,
-			nullptr,
-			&finalMatrix,
-			0,
-			0);
+		if (shouldUpdateBuffer || tf.IsChanged() || camera.IsChanged())
+		{
+			XMMATRIX finalMatrix;
+			if (camera.IsOrthographic)
+			{
+				auto vectEye = XMVectorSet(tf.Pos.X, tf.Pos.Y, tf.Pos.Z, 0.0f);
+				auto vectAt = XMVectorSet(tf.Pos.X, tf.Pos.Y, 0.0f, 0.0f);
+				auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+				XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
 
-		cameraComp.ResetIsChanged();
+				float width         = std::max(_screenWidth / camera.OrthoZoom, 1.0f);
+				float height        = std::max(_screenHeight / camera.OrthoZoom, 1.0f);
+				XMMATRIX projMatrix = XMMatrixOrthographicLH(width, height, 0.0f, 100.0f);
+
+				finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+			}
+			else
+			{
+				Vector3 vAt = tf.GetForward() + tf.Pos;
+
+				auto vectEye = XMVectorSet(tf.Pos.X, tf.Pos.Y, tf.Pos.Z, 0.0f);
+				auto vectAt = XMVectorSet(vAt.X, vAt.Y, vAt.Z, 0.0f);
+				auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+				XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
+
+				XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(
+					camera.PerspectiveAngle,
+					static_cast<float>(_screenWidth) / static_cast<float>(_screenHeight),
+					0.01f,
+					1000.0f
+				);
+
+				finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+			}
+
+			_context->UpdateSubresource(
+				camera.ConstantBuffer.Get(),
+				0,
+				nullptr,
+				&finalMatrix,
+				0,
+				0);
+
+			camera.ResetIsChanged();
+		}
+
+		_context->VSSetConstantBuffers(0, 1, camera.ConstantBuffer.GetAddressOf());
 	}
-
-	_context->VSSetConstantBuffers(0, 1, cameraComp.ConstantBuffer.GetAddressOf());
 }

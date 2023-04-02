@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector3.h"
+#include "entt.hpp"
 
 namespace BlahEngine
 {
@@ -10,6 +11,13 @@ public:
 	Vector3 Rot { 0, 0, 0};
 	Vector3 Scale{ 1, 1, 1 };
 
+	Vector3 PrevPos { 0, 0, 0 };
+	Vector3 PrevRot { 0, 0, 0 };
+	Vector3 PrevScale { 1, 1, 1 };
+
+	bool IsJustAdded;
+	entt::entity Parent = entt::null;
+	std::vector<entt::entity> Children;
 
 	Vector3 GetForward() const
 	{
@@ -26,34 +34,10 @@ public:
 		return Vector3{ 0, 1, 0 }.GetRotX(Rot.X).GetRotY(Rot.Y).GetRotZ(Rot.Z);
 	}
 
-
 	bool IsChanged() const
 	{
-		return _lastHash != GetHash();
+		return Pos != PrevPos || Rot != PrevRot || Scale != PrevScale;
 	}
-
-	void ResetIsChanged()
-	{
-		_lastHash = GetHash();
-	}
-
-	size_t GetHash() const
-	{
-		std::size_t h1 = std::hash<Vector3>{}(Pos);
-		std::size_t h2 = std::hash<Vector3>{}(Rot);
-		std::size_t h3 = std::hash<Vector3>{}(Scale);
-		return (h1 ^ (h2 << 1) >> 1) ^ (h3 << 1);
-	}
-
-	void Release()
-	{
-		Pos = { 0, 0, 0 };
-		Rot = { 0, 0, 0 };
-		Scale = { 1, 1, 1 };
-	}
-
-private:
-	size_t _lastHash = 0;
 };
 }
 //

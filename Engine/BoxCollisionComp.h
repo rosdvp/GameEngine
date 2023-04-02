@@ -5,11 +5,10 @@ namespace BlahEngine
 {
 struct BoxCollisionComp
 {
-	Vector3 Size = { 1, 1, 1 };
+	bool IsStatic = false;
 
-	void Release()
-	{
-		Size = { 1, 1, 1 };
-	}
+	Vector3 Size = { 1, 1, 1 };
+	
+	std::vector<entt::entity> Collided;
 };
 }

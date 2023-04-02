@@ -15,25 +15,14 @@ struct RenderComp
 	int ShaderId = -1;
 	int DrawerId = -1;
 
-	Vertex* Vertices = nullptr;
+	std::unique_ptr<Vertex[]> Vertices = nullptr;
 	int VerticesCount = 0;
 
-	int* Indices = nullptr;
+	std::unique_ptr<int[]> Indices = nullptr;
 	int IndicesCount = 0;
 	
 	ComPtr<ID3D11Buffer> VertexBuffer;
 	ComPtr<ID3D11Buffer> IndexBuffer;
 	ComPtr<ID3D11Buffer> MatrixConstantBuffer;
-
-	void Release()
-	{
-		delete Vertices;
-		Vertices = nullptr;
-		delete Indices;
-		Indices = nullptr;
-		VertexBuffer.Reset();
-		IndexBuffer.Reset();
-		MatrixConstantBuffer.Reset();
-	}
 };
 }

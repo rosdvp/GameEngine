@@ -22,8 +22,6 @@ private:
 
 	float _moveSpeed;
 	
-	BlahEngine::Entity _entity {};
+	entt::entity _ent{ entt::null };
 	BlahEngine::Vector3 _dir {};
-
-	bool TryMove();
 };

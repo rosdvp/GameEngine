@@ -10,11 +10,4 @@ struct UiTextComp
 	bool IsBold;
 
 	ComPtr<IDWriteTextFormat> TextFormat;
-
-
-	void Release()
-	{
-		IsBold = false;
-		TextFormat.Reset();
-	}
 };

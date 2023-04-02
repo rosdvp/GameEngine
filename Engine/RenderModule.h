@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EcsCore.h"
+#include "entt.hpp"
 #include "RenderBackground.h"
 #include "RenderCameraComp.h"
 #include "RenderDrawer.h"
@@ -14,8 +14,8 @@ namespace BlahEngine
 class IRenderModule
 {
 public:
-	virtual void SetRenderBackground(RenderBackground* background) = 0;
-	virtual void AddRenderShader(RenderShader* shader) = 0;
+	virtual void SetRenderBackground(RenderBackground&& background) = 0;
+	virtual void AddRenderShader(RenderShader&& shader) = 0;
 };
 
 class RenderModule : virtual public IRenderModule
@@ -24,7 +24,7 @@ public:
 	RenderModule();
 	~RenderModule() noexcept(false);
 
-	void Init(HWND hwnd, int screenWidth, int screenHeight, const TimeModule* timeModule, EcsCore* ecs);
+	void Init(entt::registry* ecs, const TimeModule* timeModule, HWND hwnd, int screenWidth, int screenHeights);
 
 	IDXGISwapChain* GetSwapChain() const;
 
@@ -32,12 +32,12 @@ public:
 	void DrawFrame();
 	void EndDrawFrame();
 
-	void SetRenderBackground(RenderBackground* background) override;
-	void AddRenderShader(RenderShader* shader) override;
+	void SetRenderBackground(RenderBackground&& background) override;
+	void AddRenderShader(RenderShader&& shader) override;
 
 private:
 	const TimeModule* _timeModule;
-	EcsCore* _ecs;
+	entt::registry* _ecs;
 
 	int _screenWidth;
 	int _screenHeight;
@@ -51,15 +51,12 @@ private:
 	ComPtr<ID3D11DepthStencilView> _depthStencilView;
 	ComPtr<ID3D11RasterizerState> _rasterizerState;
 	
-	RenderBackground* _renderBackgroundDefault;
-	RenderBackground* _renderBackgroundCustom;
+	std::unique_ptr<RenderBackground> _renderBackgroundDefault;
+	std::unique_ptr<RenderBackground> _renderBackgroundCustom;
 
-	RenderDrawer _renderDrawer;
-	std::vector<RenderShader*> _renderShaders;
+	std::vector<std::unique_ptr<RenderDrawer>> _renderDrawers;
+	std::vector<std::unique_ptr<RenderShader>> _renderShaders;
 
-	Filter* _cameraFilter;
-	Filter* _rendersFilter;
-
-	void DrawCamera(const TransformComp& transComp, RenderCameraComp& cameraComp);
+	void DrawCamera();
 };
 }

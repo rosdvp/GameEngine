@@ -1,5 +1,6 @@
 #include "BallSystem.h"
 
+#include "BoxCollisionComp.h"
 #include "GeometryRenderBuilder.h"
 #include "ScoreIncreaseCmd.h"
 
@@ -20,12 +21,12 @@ BallSystem::BallSystem(
 
 void BallSystem::Init()
 {
-	_entity = _ecs->CreateEntity();
+	_ent = _ecs->create();
 
-	_ecs->AddComp<TransformComp>(_entity).Scale = _ballScale;
-	_ecs->AddComp<BoxCollisionComp>(_entity);
+	_ecs->emplace<TransformComp>(_ent).Scale = _ballScale;
+	_ecs->emplace<BoxCollisionComp>(_ent).IsStatic;
 
-	auto& render = _ecs->AddComp<RenderComp>(_entity);
+	auto& render = _ecs->emplace<RenderComp>(_ent);
 	GeometryRenderBuilder::BuildSquare(render, Color::White());
 	render.DrawerId = 0;
 	render.ShaderId = 0;
@@ -35,52 +36,47 @@ void BallSystem::Init()
 
 void BallSystem::Run()
 {
-	while (!TryMove()) { }
+	auto& tf = _ecs->get<TransformComp>(_ent);
+	auto& box = _ecs->get<BoxCollisionComp>(_ent);
 
-	auto& tf = _ecs->GetComp<TransformComp>(_entity);
+	if (tf.Pos.Y < -_borderPosY)
+	{
+		_dir.Y = -_dir.Y;
+		tf.Pos.Y = -_borderPosY;
+		return;
+	}
+	if (tf.Pos.Y > _borderPosY)
+	{
+		_dir.Y = -_dir.Y;
+		tf.Pos.Y = _borderPosY;
+		return;
+	}
+
+	if (box.Collided.size() > 0)
+	{
+		auto collidedEnt = box.Collided[0];
+		auto collidedTf = _ecs->get<TransformComp>(collidedEnt);
+
+		_dir = tf.Pos - collidedTf.Pos;
+		_dir.X = _dir.X < 0 ? -1 : 1;
+		_dir.Y = _dir.Y < 0 ? -1 : 1;
+		_dir.Z = 0;
+		return;
+	}
+
 	bool isPlayer0Goal = tf.Pos.X > _borderPosX;
 	bool isPlayer1Goal = tf.Pos.X < -_borderPosX;
 
 	if (isPlayer0Goal || isPlayer1Goal)
 	{
-		auto entity = _ecs->CreateEntity();
-		_ecs->AddComp<ScoreIncreaseCmd>(entity).PlayerId = isPlayer0Goal ? 0 : 1;
+		auto scoreCmd = _ecs->create();
+		_ecs->emplace<ScoreIncreaseCmd>(scoreCmd).PlayerId = isPlayer0Goal ? 0 : 1;
 
 		_dir = -_dir;
 		_moveSpeed = _moveBaseSpeed;
 		tf.Pos = { 0, 0, 0 };
-	}
-}
-
-bool BallSystem::TryMove()
-{
-	auto& tf = _ecs->GetComp<TransformComp>(_entity);
-
-	Vector3 oldPos{ tf.Pos };
-	Vector3 delta{ _dir * _moveSpeed * _engine->Time()->GetFrameDeltaSecs() };
-	tf.Pos += delta;
-
-	PhysicsBlockData data;
-	if (_engine->Physics()->IsBlockAny(_entity, data))
-	{
-		_dir = data.DirToEnt;
-		_dir.X = _dir.X < 0 ? -1 : 1;
-		_dir.Y = _dir.Y < 0 ? -1 : 1;
-		_dir.Z = 0;
-
-		tf.Pos = oldPos;
-
-		_moveSpeed *= _moveSpeedIncK;
-
-		return false;
+		return;
 	}
 
-	if (tf.Pos.Y < -_borderPosY || tf.Pos.Y > _borderPosY)
-	{
-		_dir.Y = -_dir.Y;
-		tf.Pos = oldPos;
-		return false;
-	}
-
-	return true;
+	tf.Pos += _dir * _moveSpeed * _engine->Time().GetFrameDeltaSecs();
 }

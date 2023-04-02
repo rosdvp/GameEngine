@@ -17,25 +17,25 @@ RenderDrawer::~RenderDrawer()
 	
 }
 
-void RenderDrawer::DrawEntity(ID3D11Device* device, ID3D11DeviceContext* context, 
-                        const TransformComp& transComp, RenderComp& renderComp)
+void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context, 
+                        const TransformComp& tf, RenderComp& render)
 {
 	bool shouldUpdateMatrix = false;
 
-	if (renderComp.VertexBuffer.Get() == nullptr)
+	if (render.VertexBuffer.Get() == nullptr)
 	{
 		HRESULT result = S_OK;
 		
 		D3D11_BUFFER_DESC vertexBufferDesc = {};
 		vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufferDesc.ByteWidth = sizeof(RenderComp::Vertex) * renderComp.VerticesCount;
+		vertexBufferDesc.ByteWidth = sizeof(RenderComp::Vertex) * render.VerticesCount;
 		vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		vertexBufferDesc.CPUAccessFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA vertexInitData = {};
-		vertexInitData.pSysMem = renderComp.Vertices;
+		vertexInitData.pSysMem = render.Vertices.get();
 
-		result = device->CreateBuffer(&vertexBufferDesc, &vertexInitData, renderComp.VertexBuffer.GetAddressOf());
+		result = device->CreateBuffer(&vertexBufferDesc, &vertexInitData, render.VertexBuffer.GetAddressOf());
 		if (FAILED(result))
 			throw std::exception("failed to create vertex buffer");
 
@@ -43,14 +43,14 @@ void RenderDrawer::DrawEntity(ID3D11Device* device, ID3D11DeviceContext* context
 
 		D3D11_BUFFER_DESC indexBufferDesc = {};
 		indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		indexBufferDesc.ByteWidth = sizeof(int) * renderComp.IndicesCount;
+		indexBufferDesc.ByteWidth = sizeof(int) * render.IndicesCount;
 		indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		indexBufferDesc.CPUAccessFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA indexInitData = {};
-		indexInitData.pSysMem = renderComp.Indices;
+		indexInitData.pSysMem = render.Indices.get();
 
-		result = device->CreateBuffer(&indexBufferDesc, &indexInitData, renderComp.IndexBuffer.GetAddressOf());
+		result = device->CreateBuffer(&indexBufferDesc, &indexInitData, render.IndexBuffer.GetAddressOf());
 		if (FAILED(result))
 			throw std::exception("failed to create index buffer");
 
@@ -65,29 +65,29 @@ void RenderDrawer::DrawEntity(ID3D11Device* device, ID3D11DeviceContext* context
 		result = device->CreateBuffer(
 			&constantBufferDesc,
 			nullptr,
-			renderComp.MatrixConstantBuffer.GetAddressOf());
+			render.MatrixConstantBuffer.GetAddressOf());
 		if (FAILED(result))
 			throw std::exception("failed to create matrix constant buffer");
 
 		shouldUpdateMatrix = true;
 	}
 
-	if (shouldUpdateMatrix || transComp.IsChanged())
+	if (shouldUpdateMatrix || tf.IsChanged())
 	{
 		auto matrix =
-			XMMatrixScaling(transComp.Scale.X, transComp.Scale.Y, transComp.Scale.Z) *
-			XMMatrixRotationRollPitchYaw(transComp.Rot.X, transComp.Rot.Y, transComp.Rot.Z) *
-			XMMatrixTranslation(transComp.Pos.X, transComp.Pos.Y, transComp.Pos.Z);
+			XMMatrixScaling(tf.Scale.X, tf.Scale.Y, tf.Scale.Z) *
+			XMMatrixRotationRollPitchYaw(tf.Rot.X, tf.Rot.Y, tf.Rot.Z) *
+			XMMatrixTranslation(tf.Pos.X, tf.Pos.Y, tf.Pos.Z);
 		matrix = XMMatrixTranspose(matrix);
 		context->UpdateSubresource(
-			renderComp.MatrixConstantBuffer.Get(),
+			render.MatrixConstantBuffer.Get(),
 			0,
 			nullptr,
 			&matrix,
 			0,
 			0);
 	}
-	context->VSSetConstantBuffers(1, 1, renderComp.MatrixConstantBuffer.GetAddressOf());
+	context->VSSetConstantBuffers(1, 1, render.MatrixConstantBuffer.GetAddressOf());
 
 	UINT stride = sizeof(RenderComp::Vertex);
 	UINT offset = 0;
@@ -95,13 +95,13 @@ void RenderDrawer::DrawEntity(ID3D11Device* device, ID3D11DeviceContext* context
 	context->IASetVertexBuffers(
 		0,
 		1,
-		 renderComp.VertexBuffer.GetAddressOf(),
+		 render.VertexBuffer.GetAddressOf(),
 		&stride,
 		&offset);
 
-	context->IASetIndexBuffer(renderComp.IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	context->IASetIndexBuffer(render.IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 	context->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	context->DrawIndexed(renderComp.IndicesCount, 0, 0);
+	context->DrawIndexed(render.IndicesCount, 0, 0);
 }

@@ -6,27 +6,25 @@ using namespace DirectX;
 
 void GeometryRenderBuilder::BuildSquare(RenderComp& render, const Color& color)
 {
-	render.VerticesCount = 4;
-	render.Vertices = new RenderComp::Vertex[render.VerticesCount]
+	RenderComp::Vertex vertices[] =
 	{
 		{XMFLOAT3(-1.0f, -1.0f, 0.5f), color},
 		{XMFLOAT3(-1.0f, 1.0f, 0.5f), color},
 		{XMFLOAT3(1.0f, 1.0f, 0.5f), color},
 		{XMFLOAT3(1.0f, -1.0f, 0.5f), color},
 	};
-	render.IndicesCount = 6;
-	render.Indices      = new int[render.IndicesCount]
+	int indices[] =
 	{
 		0, 1, 2,
 		0, 2, 3
 	};
+	FillRender(render, vertices, std::size(vertices), indices, std::size(indices));
 }
 
 
 void GeometryRenderBuilder::BuildCube(RenderComp& render, const Color& color)
 {
-	render.VerticesCount = 8;
-	render.Vertices      = new RenderComp::Vertex[render.VerticesCount]
+	RenderComp::Vertex vertices[] =
 	{
 		{{-1.0f, 1.0f, -1.0f}, color},
 		{{1.0f, 1.0f, -1.0f}, color},
@@ -37,9 +35,7 @@ void GeometryRenderBuilder::BuildCube(RenderComp& render, const Color& color)
 		{{-1.0f, -1.0f, 1.0f}, color},
 		{{1.0f, -1.0f, 1.0f}, color},
 	};
-
-	render.IndicesCount = 36;
-	render.Indices      = new int[render.IndicesCount]
+	int indices[] =
 	{
 		0, 1, 2, // side 1
 		2, 1, 3,
@@ -54,6 +50,7 @@ void GeometryRenderBuilder::BuildCube(RenderComp& render, const Color& color)
 		3, 7, 2, // side 6
 		2, 7, 6,
 	};
+	FillRender(render, vertices, std::size(vertices), indices, std::size(indices));
 }
 
 
@@ -113,14 +110,23 @@ void GeometryRenderBuilder::BuildSphere(RenderComp& render, size_t tessellation,
 
 	InvertIndices(indices);
 
-	render.VerticesCount = vertices.size();
-	render.Vertices      = new RenderComp::Vertex[render.VerticesCount];
-	for (int i             = 0; i < render.VerticesCount; i++)
+	FillRender(render, 
+		vertices.data(), vertices.size(), 
+		indices.data(), indices.size());
+}
+
+void GeometryRenderBuilder::FillRender(RenderComp& render,
+                                       const RenderComp::Vertex* vertices, int verticesCount,
+                                       const int* indices, int indicesCount)
+{
+	render.VerticesCount = verticesCount;
+	render.Vertices = std::make_unique<RenderComp::Vertex[]>(verticesCount);
+	for (int i = 0; i < verticesCount; i++)
 		render.Vertices[i] = vertices[i];
 
-	render.IndicesCount = indices.size();
-	render.Indices      = new int[render.IndicesCount];
-	for (int i            = 0; i < render.IndicesCount; i++)
+	render.IndicesCount = indicesCount;
+	render.Indices = std::make_unique<int[]>(indicesCount);
+	for (int i = 0; i < indicesCount; i++)
 		render.Indices[i] = indices[i];
 }
 

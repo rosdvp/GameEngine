@@ -9,10 +9,8 @@ public:
 	void Run() override;
 
 private:
-	BlahEngine::Entity _entity {};
-
-	BlahEngine::Filter* _scoreIncreaseCmdFilter = nullptr;
-
+	entt::entity _ent{ entt::null };
+	
 	int _score0 = 0;
 	int _score1 = 0;
 };

@@ -15,14 +15,13 @@ public:
 	void Run();
 
 	void AddEvent(const UINT& msg, WPARAM wParam, LPARAM lParam);
-	void ClearEvents();
+	void Clear();
 
 	void SetWinRect(const RECT& winRect);
-
-	const InputEventsCollection& GetEvents() const;
-
+	
 	bool IsKeyDown(EKeyCode key) const;
-	bool IsKeyUp(EKeyCode key) const;
+	bool IsKeyPressed(EKeyCode key) const;
+	bool IsKeyReleased(EKeyCode key) const;
 
 	bool IsMouseMoved() const;
 	int GetMouseDeltaX() const;
@@ -39,9 +38,9 @@ private:
 	int _isMouseWheelChanged;
 	int _mouseWheel;
 
-	InputEventsCollection _events;
-
-	bool* _keysDownMap;
+	std::unique_ptr<bool[]> _keysDownMap;
+	std::unique_ptr<bool[]> _keysPressedMap;
+	std::unique_ptr<bool[]> _keysReleasedMap;
 
 	void DecodeKey(const UINT& msg, WPARAM wParam, EKeyCode& outKey, bool& outIsDown);
 };

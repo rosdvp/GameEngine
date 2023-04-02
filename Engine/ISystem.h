@@ -1,16 +1,17 @@
 #pragma once
 
+#include "entt.hpp"
+
 namespace BlahEngine
 {
 class Engine;
-class EcsCore;
 
 class ISystem
 {
 public:
 	virtual ~ISystem() = default;
 
-	void AttachEngine(Engine* engine, EcsCore* ecs)
+	void AttachEngine(Engine* engine, entt::registry* ecs)
 	{
 		_engine = engine;
 		_ecs = ecs;
@@ -18,7 +19,7 @@ public:
 
 protected:
 	Engine* _engine = nullptr;
-	EcsCore* _ecs = nullptr;
+	entt::registry* _ecs = nullptr;
 };
 
 class IInitSystem : virtual public ISystem

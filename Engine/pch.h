@@ -14,8 +14,10 @@
 #include <unordered_map>
 #include <chrono>
 #include <iostream>
+#include <memory>
 
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <windows.h>
 
 #include <d3d11.h>
@@ -29,3 +31,5 @@
 
 #include <wrl.h>
 using namespace Microsoft::WRL;
+
+#include "entt.hpp"

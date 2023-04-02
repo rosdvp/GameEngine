@@ -43,12 +43,6 @@
     <Filter Include="Header Files\Physics">
       <UniqueIdentifier>{12a9ef95-9b12-4307-81a4-b9a1c4b0f469}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Ecs">
-      <UniqueIdentifier>{8cd8fec1-649c-4dce-9ecd-ce8957464f9b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Ecs">
-      <UniqueIdentifier>{0d25023b-c2f5-4060-8af9-5e585c312f60}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\StdComps">
       <UniqueIdentifier>{362d44fa-885c-4921-9950-6290ad7f7db4}</UniqueIdentifier>
     </Filter>
@@ -105,7 +99,7 @@
     <ClInclude Include="InputModule.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="GameplayModule.h">
+    <ClInclude Include="SystemsModule.h">
       <Filter>Header Files\Gameplay</Filter>
     </ClInclude>
     <ClInclude Include="ISystem.h">
@@ -117,26 +111,8 @@
     <ClInclude Include="PhysicsModule.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="EntitiesPool.h">
-      <Filter>Header Files\Ecs</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files\Ecs</Filter>
-    </ClInclude>
     <ClInclude Include="ArrayResize.h">
       <Filter>Header Files\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Filter.h">
-      <Filter>Header Files\Ecs</Filter>
-    </ClInclude>
-    <ClInclude Include="CompPool.h">
-      <Filter>Header Files\Ecs</Filter>
-    </ClInclude>
-    <ClInclude Include="EcsCore.h">
-      <Filter>Header Files\Ecs</Filter>
-    </ClInclude>
-    <ClInclude Include="FilterMask.h">
-      <Filter>Header Files\Ecs</Filter>
     </ClInclude>
     <ClInclude Include="TransformComp.h">
       <Filter>Header Files\StdComps</Filter>
@@ -171,6 +147,9 @@
     <ClInclude Include="StatsModule.h">
       <Filter>Header Files\Stats</Filter>
     </ClInclude>
+    <ClInclude Include="entt.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -200,7 +179,7 @@
     <ClCompile Include="InputModule.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="GameplayModule.cpp">
+    <ClCompile Include="SystemsModule.cpp">
       <Filter>Source Files\Gameplay</Filter>
     </ClCompile>
     <ClCompile Include="Vector3.cpp">
@@ -209,20 +188,8 @@
     <ClCompile Include="PhysicsModule.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="EntitiesPool.cpp">
-      <Filter>Source Files\Ecs</Filter>
-    </ClCompile>
-    <ClCompile Include="Filter.cpp">
-      <Filter>Source Files\Ecs</Filter>
-    </ClCompile>
-    <ClCompile Include="EcsCore.cpp">
-      <Filter>Source Files\Ecs</Filter>
-    </ClCompile>
     <ClCompile Include="RenderDrawer.cpp">
       <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="CompPool.cpp">
-      <Filter>Source Files\Ecs</Filter>
     </ClCompile>
     <ClCompile Include="UiModule.cpp">
       <Filter>Source Files\UI</Filter>

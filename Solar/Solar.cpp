@@ -10,8 +10,8 @@ int main()
 {
     Engine engine;
     
-    engine.Gameplay()->AddSystem(new CameraSystem(5.0f));
-    engine.Gameplay()->AddSystem(new PlanetsSystem);
+    engine.Systems()->AddSystem(new CameraSystem(5.0f));
+    engine.Systems()->AddSystem(new PlanetsSystem);
 
     engine.Init();
     engine.Run();

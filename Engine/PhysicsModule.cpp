@@ -2,6 +2,9 @@
 #include "PhysicsModule.h"
 
 #include "Logger.h"
+#include "BoxCollisionComp.h"
+#include "TransformComp.h"
+
 
 using namespace BlahEngine;
 
@@ -11,52 +14,52 @@ PhysicsModule::~PhysicsModule()
 }
 
 
-void PhysicsModule::Init(EcsCore* ecs)
+void PhysicsModule::Init(entt::registry* ecs)
 {
 	_ecs = ecs;
-
-	_collisionsFilter = ecs->GetFilter(FilterMask().Inc<TransformComp>().Inc<BoxCollisionComp>());
-
+	
 	Logger::Debug("collision module", "initialized");
 }
 
-bool PhysicsModule::IsBlockAny(Entity entity)
+void PhysicsModule::AdjustChildrenTransforms()
 {
-	PhysicsBlockData dummy;
-	return IsBlockAny(entity, dummy);
 }
 
-bool PhysicsModule::IsBlockAny(Entity entity, PhysicsBlockData& outData)
+void PhysicsModule::RunCollisions()
 {
-	auto& tfA = _ecs->GetComp<TransformComp>(entity);
-	auto& boxA = _ecs->GetComp<BoxCollisionComp>(entity);
+	auto view = _ecs->view<TransformComp, BoxCollisionComp>();
 
-	for (auto ent : *_collisionsFilter)
-		if (ent != entity)
+	view.each([](TransformComp& tf, BoxCollisionComp& box)
 		{
-			auto& tfB = _ecs->GetComp<TransformComp>(ent);
-			auto& boxB = _ecs->GetComp<BoxCollisionComp>(ent);
+			box.Collided.clear();
+		});
+
+	for (auto entA : view)
+	{
+		auto [tfA, boxA] = _ecs->get<TransformComp, BoxCollisionComp>(entA);
+
+		for (auto entB : view)
+		{
+			if (entA <= entB) //escape double check
+				continue;
+
+			auto [tfB, boxB] = _ecs->get<TransformComp, BoxCollisionComp>(entB);
 			if (IsBoxBoxIntersected(tfA, boxA, tfB, boxB))
 			{
-				outData.Ent = ent;
-				outData.DirToEnt = (tfA.Pos - tfB.Pos).GetNorm();
-				return true;
+				boxA.Collided.push_back(entB);
+				boxB.Collided.push_back(entA);
+
+				if (!boxA.IsStatic)
+				{
+					tfA.Pos = tfA.PrevPos;
+				}
+				else if (!boxB.IsStatic)
+				{
+					tfB.Pos = tfB.PrevPos;
+				}
 			}
 		}
-	return false;
-}
-
-bool PhysicsModule::TryMove(Entity entity, const Vector3& deltaPos)
-{
-	auto& tf = _ecs->GetComp<TransformComp>(entity);
-	auto prevPos = tf.Pos;
-	tf.Pos += deltaPos;
-	if (IsBlockAny(entity))
-	{
-		tf.Pos = prevPos;
-		return false;
 	}
-	return true;
 }
 
 bool PhysicsModule::IsBoxBoxIntersected(

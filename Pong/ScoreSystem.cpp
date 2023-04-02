@@ -7,31 +7,31 @@ using namespace BlahEngine;
 
 void ScoreSystem::Init()
 {
-	_entity = _ecs->CreateEntity();
-	auto& tf = _ecs->AddComp<TransformComp>(_entity);
+	_ent = _ecs->create();
+	auto& tf = _ecs->emplace<TransformComp>(_ent);
 	tf.Pos = { 0, -200, 0 };
 	tf.Scale = { 200, 1, 1 };
-	auto& textComp = _ecs->AddComp<UiTextComp>(_entity);
-	textComp.Font = L"Arial";
-	textComp.FontSize = 50;
-	textComp.IsBold = true;
-	textComp.Text = L"0:0";
-
-	_scoreIncreaseCmdFilter = _ecs->GetFilter(FilterMask().Inc<ScoreIncreaseCmd>());
+	auto& txt = _ecs->emplace<UiTextComp>(_ent);
+	txt.Font = L"Arial";
+	txt.FontSize = 50;
+	txt.IsBold = true;
+	txt.Text = L"0:0";
 }
 
 void ScoreSystem::Run()
 {
-	for (auto entity : *_scoreIncreaseCmdFilter)
+	auto view = _ecs->view<ScoreIncreaseCmd>();
+	for (auto ent : view)
 	{
-		auto& cmd = _ecs->GetComp<ScoreIncreaseCmd>(entity);
+		auto& cmd = view.get<ScoreIncreaseCmd>(ent);
 		if (cmd.PlayerId == 0)
-			_score0 += 1;
+			_score0++;
 		else
-			_score1 += 1;
-		_ecs->RemoveComp<ScoreIncreaseCmd>(entity);
+			_score1++;
 
-		auto& textComp = _ecs->GetComp<UiTextComp>(_entity);
-		textComp.Text = std::to_wstring(_score0) + L":" + std::to_wstring(_score1);
+		auto& txt = _ecs->get<UiTextComp>(_ent);
+		txt.Text = std::to_wstring(_score0) + L":" + std::to_wstring(_score1);
+
+		_ecs->destroy(ent);
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "EcsCore.h"
+#include "entt.hpp"
+
 #include "UiTextComp.h"
 
 namespace BlahEngine
@@ -11,18 +12,17 @@ public:
 	UiModule();
 	~UiModule();
 
-	void Init(IDXGISwapChain* swapChain, EcsCore* ecs);
+	void Init(entt::registry* ecs, IDXGISwapChain* swapChain);
 
 	void DrawFrame();
 
 private:
+	entt::registry * _ecs;
+
 	ComPtr<ID2D1Factory> _d2Factory;
 	ComPtr<IDWriteFactory> _dwFactory;
 	ComPtr<ID2D1RenderTarget> _renderTarget;
 	ComPtr<ID2D1SolidColorBrush> _brushBlack;
-	
-	EcsCore* _ecs;
-	Filter* _textsFilter;
 
 	void SetupText(UiTextComp& textComp);
 };

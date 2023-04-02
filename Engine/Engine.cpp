@@ -1,56 +1,35 @@
 #include "pch.h"
 #include "Engine.h"
-#include "Filter.h"
 
 using namespace BlahEngine;
 
 Engine::Engine() :
-	_isInited(false),
-	_window(new Window),
-	_renderModule(new RenderModule),
-	_uiModule(new UiModule),
-	_inputModule(new InputModule),
-	_timeModule(new TimeModule),
-	_statsModule(new StatsModule),
-	_gameplayModule(new GameplayModule),
-	_physicsModule(new PhysicsModule),
-	_transformsFilter(nullptr) {}
+	_isInited(false) {}
 
 Engine::~Engine()
 {
-	delete _uiModule;
-	delete _renderModule;
-	delete _physicsModule;
-	delete _gameplayModule;
-	delete _window;
-	delete _inputModule;
-	delete _statsModule;
-	delete _timeModule;
 }
 
 bool Engine::Init()
 {
-	_timeModule->Init();
-	_inputModule->Init();
+	_timeModule.Init();
+	_inputModule.Init();
 
 	WindowDesc windowDesc;
 	windowDesc.Width = 640; //854
 	windowDesc.Height = 480;
-	_window->Create(windowDesc);
-	_window->AttachInput(_inputModule);
+	_window.Create(windowDesc);
+	_window.AttachInput(&_inputModule);
 	
-	_gameplayModule->Init(this);
+	_systemsModule.Init(this, &_ecs);
 
-	_statsModule->Init(_timeModule, _gameplayModule->GetEcs());
+	_statsModule.Init(&_ecs, &_timeModule);
 
-	_renderModule->Init(_window->GetHWND(), windowDesc.Width, windowDesc.Height, _timeModule, _gameplayModule->GetEcs());
-	_uiModule->Init(_renderModule->GetSwapChain(), _gameplayModule->GetEcs());
-	_physicsModule->Init(_gameplayModule->GetEcs());
+	_renderModule.Init(&_ecs, &_timeModule, _window.GetHWND(), windowDesc.Width, windowDesc.Height);
+	_uiModule.Init(&_ecs, _renderModule.GetSwapChain());
 
-	_gameplayModule->InitSystems();
-
-	_transformsFilter = _gameplayModule->GetEcs()->GetFilter(FilterMask().Inc<TransformComp>());
-
+	_physicsModule.Init(&_ecs);
+	
 	_isInited = true;
 	return true;
 }
@@ -63,67 +42,75 @@ void Engine::Run()
 
 	while (true)
 	{
-		_timeModule->Run();
+		_timeModule.Run();
 
-		_window->Run();
+		_window.Run();
 
-		if (!_window->IsActive())
+		if (!_window.IsActive())
 			continue;
 
-		if (_window->IsExit())
+		if (_window.IsExit())
 			break;
 
-		if (_window->IsResize()) { }
+		if (_window.IsResize()) { }
 
-		_inputModule->Run();
+		_inputModule.Run();
 
-		_statsModule->BeginGameplay();
-		_gameplayModule->RunSystems();
-		_statsModule->EndGameplay();
+		_statsModule.BeginGameplay();
+		_systemsModule.Run();
+		_statsModule.EndGameplay();
 
-		_inputModule->ClearEvents();
+		_inputModule.Clear();
 
-		_statsModule->BeginRender();
-		_renderModule->BeginDrawFrame();
-		_renderModule->DrawFrame();
-		_uiModule->DrawFrame();
-		_renderModule->EndDrawFrame();
-		_statsModule->EndRender();
+		_statsModule.BeginPhysics();
+		_physicsModule.RunCollisions();
+		_statsModule.EndPhysics();
 
-		_statsModule->RunDisplay();
+		_statsModule.BeginRender();
+		_renderModule.BeginDrawFrame();
+		_renderModule.DrawFrame();
+		_uiModule.DrawFrame();
+		_renderModule.EndDrawFrame();
+		_statsModule.EndRender();
 
-		for (auto entity : *_transformsFilter)
-			_gameplayModule->GetEcs()->GetComp<TransformComp>(entity).ResetIsChanged();
+		_statsModule.Run();
+		
+		_ecs.view<TransformComp>().each([](TransformComp& tf)
+			{
+				tf.PrevPos = tf.Pos;
+				tf.PrevRot = tf.Rot;
+				tf.PrevScale = tf.Scale;
+			});
 	}
 }
 
+entt::registry& Engine::Ecs()
+{
+	return _ecs;
+}
 
-IRenderModule* Engine::Render()
+
+IRenderModule& Engine::Render()
 {
 	return _renderModule;
 }
 
-IPhysicsModule* Engine::Physics()
+ISystemsModule& Engine::Systems()
 {
-	return _physicsModule;
+	return _systemsModule;
 }
 
-IGameplayModule* Engine::Gameplay()
-{
-	return _gameplayModule;
-}
-
-const InputModule* Engine::Input()
+const InputModule& Engine::Input()
 {
 	return _inputModule;
 }
 
-const TimeModule* Engine::Time()
+const TimeModule& Engine::Time()
 {
 	return _timeModule;
 }
 
-IStatsModule* Engine::Stats()
+IStatsModule& Engine::Stats()
 {
 	return _statsModule;
 }

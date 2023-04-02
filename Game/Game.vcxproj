@@ -105,12 +105,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Projects\CppProjects\GameEngine\Engine;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Projects\CppProjects\GameEngine\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Engine_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -122,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Projects\CppProjects\GameEngine\Engine;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,18 +135,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnimatedRenderBackground.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="MatrixRenderShader.cpp" />
-    <ClCompile Include="SimpleRenderShader.cpp" />
-    <ClCompile Include="SquareRenderObject.cpp" />
-    <ClCompile Include="TriangleRenderObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AnimatedRenderBackground.h" />
-    <ClInclude Include="CameraSystem.h" />
-    <ClInclude Include="MatrixRenderShader.h" />
-    <ClInclude Include="SimpleRenderShader.h" />
+    <ClInclude Include="entt.hpp" />
+    <ClInclude Include="TestA.h" />
+    <ClInclude Include="TestB.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

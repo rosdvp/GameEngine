@@ -4,10 +4,10 @@ using namespace BlahEngine;
 
 void CameraSystem::Init()
 {
-	Entity entity = _ecs->CreateEntity();
-	auto& tf =_ecs->AddComp<TransformComp>(entity);
+	auto ent = _ecs->create();
+	auto& tf =_ecs->emplace<TransformComp>(ent);
 	tf.Pos = { 0, 0, -10 };
-	auto& cameraComp = _ecs->AddComp<RenderCameraComp>(entity);
+	auto& cameraComp = _ecs->emplace<RenderCameraComp>(ent);
 	cameraComp.IsOrthographic = true;
 	cameraComp.OrthoZoom = 30;
 }

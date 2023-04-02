@@ -8,18 +8,16 @@
 using namespace BlahEngine;
 
 UiModule::UiModule():
-	_ecs(nullptr),
-	_textsFilter(nullptr) {}
+	_ecs(nullptr) {}
 
 UiModule::~UiModule()
 {
     Logger::Debug("ui", "destroyed");
 }
 
-void UiModule::Init(IDXGISwapChain* swapChain, EcsCore* ecs)
+void UiModule::Init(entt::registry* ecs, IDXGISwapChain* swapChain)
 {
     _ecs = ecs;
-    _textsFilter = _ecs->GetFilter(FilterMask().Inc<TransformComp>().Inc<UiTextComp>());
 
     HRESULT result = S_OK;
 
@@ -73,17 +71,14 @@ void UiModule::DrawFrame()
     //_renderTarget->Clear(D2D1::ColorF(D2D1::ColorF::White));
 
     D2D1_SIZE_F renderTargetSize = _renderTarget->GetSize();
-
-    for (auto entity : *_textsFilter)
+    
+    auto view = _ecs->view<const TransformComp, UiTextComp>();
+    for (auto ent : view)
     {
-        auto& textComp = _ecs->GetComp<UiTextComp>(entity);
-
-        if (textComp.TextFormat.Get() == nullptr)
-            SetupText(textComp);
-
-        auto& tf = _ecs->GetComp<TransformComp>(entity);
-
+        auto [tf, txt] = view.get<const TransformComp, UiTextComp>(ent);
         
+        if (txt.TextFormat.Get() == nullptr)
+            SetupText(txt);
 
         auto rect = D2D1::RectF(
             renderTargetSize.width / 2 + tf.Pos.X - tf.Scale.X / 2,
@@ -93,9 +88,9 @@ void UiModule::DrawFrame()
         );
 
         _renderTarget->DrawText(
-            textComp.Text.data(),
-            textComp.Text.length(),
-            textComp.TextFormat.Get(),
+            txt.Text.data(),
+            txt.Text.length(),
+            txt.TextFormat.Get(),
             rect,
             _brushBlack.Get());
     }
