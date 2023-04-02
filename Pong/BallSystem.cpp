@@ -1,6 +1,6 @@
 #include "BallSystem.h"
 
-#include "BoxCollisionComp.h"
+#include "CollisionComp.h"
 #include "GeometryRenderBuilder.h"
 #include "ScoreIncreaseCmd.h"
 
@@ -24,7 +24,7 @@ void BallSystem::Init()
 	_ent = _ecs->create();
 
 	_ecs->emplace<TransformComp>(_ent).Scale = _ballScale;
-	_ecs->emplace<BoxCollisionComp>(_ent).IsStatic;
+	_ecs->emplace<CollisionComp>(_ent).IsStatic;
 
 	auto& render = _ecs->emplace<RenderComp>(_ent);
 	GeometryRenderBuilder::BuildSquare(render, Color::White());
@@ -37,7 +37,7 @@ void BallSystem::Init()
 void BallSystem::Run()
 {
 	auto& tf = _ecs->get<TransformComp>(_ent);
-	auto& box = _ecs->get<BoxCollisionComp>(_ent);
+	auto& box = _ecs->get<CollisionComp>(_ent);
 
 	if (tf.Pos.Y < -_borderPosY)
 	{

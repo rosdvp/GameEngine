@@ -150,7 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BoxCollisionComp.h" />
+    <ClInclude Include="CollisionComp.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="entt.hpp" />
     <ClInclude Include="ArrayResize.h" />

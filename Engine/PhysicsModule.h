@@ -4,7 +4,7 @@
 
 namespace BlahEngine
 {
-struct BoxCollisionComp;
+struct CollisionComp;
 struct TransformComp;
 
 class PhysicsModule
@@ -21,10 +21,6 @@ public:
 
 private:
 	entt::registry* _ecs;
-
-	bool IsBoxBoxIntersected(
-		const TransformComp& tfA, const BoxCollisionComp& boxA,
-		const TransformComp& tfB, const BoxCollisionComp& boxB);
 
 	Vector3 GetBoxBoxIntersectDir(
 		const Vector3& posA, const Vector3& sizeA,

@@ -27,7 +27,7 @@ void PlayerSystem::Init()
 	tf.Pos = startPos;
 	tf.Scale = _platformScale;
 
-	_ecs->emplace<BoxCollisionComp>(_entPlayer).IsStatic = true;
+	_ecs->emplace<CollisionComp>(_entPlayer).IsStatic = true;
 
 	auto& render = _ecs->emplace<RenderComp>(_entPlayer);
 	GeometryRenderBuilder::BuildSquare(render, Color::White());

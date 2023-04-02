@@ -129,7 +129,7 @@
     <ClInclude Include="RenderCameraComp.h">
       <Filter>Header Files\StdComps</Filter>
     </ClInclude>
-    <ClInclude Include="BoxCollisionComp.h">
+    <ClInclude Include="CollisionComp.h">
       <Filter>Header Files\StdComps</Filter>
     </ClInclude>
     <ClInclude Include="UiModule.h">

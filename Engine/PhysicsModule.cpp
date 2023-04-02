@@ -2,7 +2,7 @@
 #include "PhysicsModule.h"
 
 #include "Logger.h"
-#include "BoxCollisionComp.h"
+#include "CollisionComp.h"
 #include "TransformComp.h"
 
 
@@ -27,51 +27,42 @@ void PhysicsModule::AdjustChildrenTransforms()
 
 void PhysicsModule::RunCollisions()
 {
-	auto view = _ecs->view<TransformComp, BoxCollisionComp>();
+	auto view = _ecs->view<TransformComp, CollisionComp>();
 
-	view.each([](TransformComp& tf, BoxCollisionComp& box)
+	view.each([](TransformComp& tf, CollisionComp& col)
 		{
-			box.Collided.clear();
+			col.Collided.clear();
+			col.Box.Center = { tf.Pos.X, tf.Pos.Y, tf.Pos.Z };
+			col.Box.Extents = { tf.Scale.X * col.Size.X, tf.Scale.Y * col.Size.Y, tf.Scale.Z * col.Size.Z};
 		});
 
 	for (auto entA : view)
 	{
-		auto [tfA, boxA] = _ecs->get<TransformComp, BoxCollisionComp>(entA);
+		auto [tfA, colA] = _ecs->get<TransformComp, CollisionComp>(entA);
 
 		for (auto entB : view)
 		{
 			if (entA <= entB) //escape double check
 				continue;
 
-			auto [tfB, boxB] = _ecs->get<TransformComp, BoxCollisionComp>(entB);
-			if (IsBoxBoxIntersected(tfA, boxA, tfB, boxB))
+			auto [tfB, colB] = _ecs->get<TransformComp, CollisionComp>(entB);
+			if (colA.Box.Intersects(colB.Box))
 			{
-				boxA.Collided.push_back(entB);
-				boxB.Collided.push_back(entA);
+				std::cout << "collided" << std::endl;
+				colA.Collided.push_back(entB);
+				colB.Collided.push_back(entA);
 
-				if (!boxA.IsStatic)
+				if (!colA.IsStatic)
 				{
 					tfA.Pos = tfA.PrevPos;
 				}
-				else if (!boxB.IsStatic)
+				else if (!colB.IsStatic)
 				{
 					tfB.Pos = tfB.PrevPos;
 				}
 			}
 		}
 	}
-}
-
-bool PhysicsModule::IsBoxBoxIntersected(
-	const TransformComp& tfA, const BoxCollisionComp& boxA,
-	const TransformComp& tfB, const BoxCollisionComp& boxB)
-{
-	Vector3 sizeA = tfA.Scale * boxA.Size;
-	Vector3 sizeB = tfB.Scale * boxB.Size;
-
-	return abs(tfA.Pos.X - tfB.Pos.X) < (sizeA.X + sizeB.X) &&
-		abs(tfA.Pos.Y - tfB.Pos.Y) < (sizeA.Y + sizeB.Y) &&
-		abs(tfA.Pos.Z - tfB.Pos.Z) < (sizeA.Z + sizeB.Z);
 }
 
 Vector3 PhysicsModule::GetBoxBoxIntersectDir(
