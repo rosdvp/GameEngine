@@ -9,6 +9,7 @@
 #include "RenderModule.h"
 #include "StatsModule.h"
 #include "TimeModule.h"
+#include "TransformsModule.h"
 #include "UiModule.h"
 #include "Window.h"
 
@@ -44,6 +45,7 @@ private:
 	TimeModule _timeModule;
 	StatsModule _statsModule;
 	SystemsModule _systemsModule;
+	TransformsModule _transformsModule;
 	PhysicsModule _physicsModule;
 };
 }

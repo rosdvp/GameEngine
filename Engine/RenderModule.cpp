@@ -282,7 +282,7 @@ void RenderModule::DrawCamera()
 			shouldUpdateBuffer = true;
 		}
 
-		if (shouldUpdateBuffer || tf.IsChanged() || camera.IsChanged())
+		if (shouldUpdateBuffer || tf.IsPosOrRotOrScaleChanged() || camera.IsChanged())
 		{
 			XMMATRIX finalMatrix;
 			if (camera.IsOrthographic)

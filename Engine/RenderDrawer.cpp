@@ -72,12 +72,12 @@ void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context,
 		shouldUpdateMatrix = true;
 	}
 
-	if (shouldUpdateMatrix || tf.IsChanged())
+	if (shouldUpdateMatrix || tf.IsPosOrRotOrScaleChanged())
 	{
 		auto matrix =
 			XMMatrixScaling(tf.Scale.X, tf.Scale.Y, tf.Scale.Z) *
 			XMMatrixRotationRollPitchYaw(tf.Rot.X, tf.Rot.Y, tf.Rot.Z) *
-			XMMatrixTranslation(tf.Pos.X, tf.Pos.Y, tf.Pos.Z);
+			XMMatrixTranslation(tf.GlobalPos.X, tf.GlobalPos.Y, tf.GlobalPos.Z);
 		matrix = XMMatrixTranspose(matrix);
 		context->UpdateSubresource(
 			render.MatrixConstantBuffer.Get(),

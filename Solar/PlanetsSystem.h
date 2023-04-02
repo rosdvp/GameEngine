@@ -9,10 +9,8 @@ public:
 	void Run() override;
 
 private:
-	BlahEngine::Filter* _planetsFilter = nullptr;
-
-	BlahEngine::Entity CreatePlanet(
-		bool isRootBounded, BlahEngine::Entity root, 
-		const BlahEngine::Vector3& initDir, float orbitRadius, float orbitSpeed, 
+	entt::entity CreatePlanet(
+		entt::entity entParent,
+		float orbitRadius, float orbitSpeed,
 		float selfRotateSpeed, const BlahEngine::Vector3& scale, const BlahEngine::Color& color);
 };

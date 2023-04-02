@@ -17,12 +17,7 @@ PhysicsModule::~PhysicsModule()
 void PhysicsModule::Init(entt::registry* ecs)
 {
 	_ecs = ecs;
-	
 	Logger::Debug("collision module", "initialized");
-}
-
-void PhysicsModule::AdjustChildrenTransforms()
-{
 }
 
 void PhysicsModule::RunCollisions()
@@ -64,6 +59,7 @@ void PhysicsModule::RunCollisions()
 		}
 	}
 }
+
 
 Vector3 PhysicsModule::GetBoxBoxIntersectDir(
 	const Vector3& posA, const Vector3& sizeA, 

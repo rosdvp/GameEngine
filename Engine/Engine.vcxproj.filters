@@ -43,9 +43,6 @@
     <Filter Include="Header Files\Physics">
       <UniqueIdentifier>{12a9ef95-9b12-4307-81a4-b9a1c4b0f469}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\StdComps">
-      <UniqueIdentifier>{362d44fa-885c-4921-9950-6290ad7f7db4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\UI">
       <UniqueIdentifier>{0da39e27-6452-44a0-8a1a-f9815af044a6}</UniqueIdentifier>
     </Filter>
@@ -63,6 +60,12 @@
     </Filter>
     <Filter Include="Source Files\Stats">
       <UniqueIdentifier>{58773f54-e8fa-482c-aa38-9066b5e72894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Transforms">
+      <UniqueIdentifier>{362d44fa-885c-4921-9950-6290ad7f7db4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Transforms">
+      <UniqueIdentifier>{d573212f-a1f9-424c-9f79-38ef66613a9b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -115,28 +118,16 @@
       <Filter>Header Files\Math</Filter>
     </ClInclude>
     <ClInclude Include="TransformComp.h">
-      <Filter>Header Files\StdComps</Filter>
+      <Filter>Header Files\Transforms</Filter>
     </ClInclude>
     <ClInclude Include="Vector3.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="RenderComp.h">
-      <Filter>Header Files\StdComps</Filter>
-    </ClInclude>
     <ClInclude Include="RenderDrawer.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
-    <ClInclude Include="RenderCameraComp.h">
-      <Filter>Header Files\StdComps</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionComp.h">
-      <Filter>Header Files\StdComps</Filter>
-    </ClInclude>
     <ClInclude Include="UiModule.h">
       <Filter>Header Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UiTextComp.h">
-      <Filter>Header Files\StdComps</Filter>
     </ClInclude>
     <ClInclude Include="GeometryRenderBuilder.h">
       <Filter>Header Files\Helpers</Filter>
@@ -149,6 +140,21 @@
     </ClInclude>
     <ClInclude Include="entt.hpp">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionComp.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCameraComp.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderComp.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="UiTextComp.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformsModule.h">
+      <Filter>Header Files\Transforms</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +205,9 @@
     </ClCompile>
     <ClCompile Include="StatsModule.cpp">
       <Filter>Source Files\Stats</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformsModule.cpp">
+      <Filter>Source Files\Transforms</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

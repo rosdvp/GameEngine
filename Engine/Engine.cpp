@@ -25,10 +25,11 @@ bool Engine::Init()
 
 	_statsModule.Init(&_ecs, &_timeModule);
 
+	_transformsModule.Init(&_ecs);
+	_physicsModule.Init(&_ecs);
+
 	_renderModule.Init(&_ecs, &_timeModule, _window.GetHWND(), windowDesc.Width, windowDesc.Height);
 	_uiModule.Init(&_ecs, _renderModule.GetSwapChain());
-
-	_physicsModule.Init(&_ecs);
 	
 	_isInited = true;
 	return true;
@@ -62,6 +63,8 @@ void Engine::Run()
 
 		_inputModule.Clear();
 
+		_transformsModule.AdjustGlobalPositions();
+
 		_statsModule.BeginPhysics();
 		_physicsModule.RunCollisions();
 		_statsModule.EndPhysics();
@@ -73,14 +76,9 @@ void Engine::Run()
 		_renderModule.EndDrawFrame();
 		_statsModule.EndRender();
 
+		_transformsModule.ResetTransformsIsChanged();
+
 		_statsModule.Run();
-		
-		_ecs.view<TransformComp>().each([](TransformComp& tf)
-			{
-				tf.PrevPos = tf.Pos;
-				tf.PrevRot = tf.Rot;
-				tf.PrevScale = tf.Scale;
-			});
 	}
 }
 
