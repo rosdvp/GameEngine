@@ -156,6 +156,18 @@
     <ClInclude Include="TransformsModule.h">
       <Filter>Header Files\Transforms</Filter>
     </ClInclude>
+    <ClInclude Include="RenderImporter.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Rotation.h">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderSimple.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderUnlit.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -208,6 +220,18 @@
     </ClCompile>
     <ClCompile Include="TransformsModule.cpp">
       <Filter>Source Files\Transforms</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderImporter.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Rotation.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShaderSimple.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShaderUnlit.cpp">
+      <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

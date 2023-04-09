@@ -76,7 +76,9 @@ void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context,
 	{
 		auto matrix =
 			XMMatrixScaling(tf.Scale.X, tf.Scale.Y, tf.Scale.Z) *
-			XMMatrixRotationRollPitchYaw(tf.Rot.X, tf.Rot.Y, tf.Rot.Z) *
+			//XMMatrixRotationRollPitchYaw(tf.Rot.X, tf.Rot.Y, tf.Rot.Z) *
+			//XMMatrixRotationRollPitchYaw(rot.X, rot.Y, rot.Z) *
+			XMMatrixRotationQuaternion(tf.Rot.GetQuaternion()) *
 			XMMatrixTranslation(tf.GlobalPos.X, tf.GlobalPos.Y, tf.GlobalPos.Z);
 		matrix = XMMatrixTranspose(matrix);
 		context->UpdateSubresource(
@@ -88,7 +90,9 @@ void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context,
 			0);
 	}
 	context->VSSetConstantBuffers(1, 1, render.MatrixConstantBuffer.GetAddressOf());
-
+	
+	context->PSSetShaderResources(0, 1, render.Texture.GetAddressOf());
+		
 	UINT stride = sizeof(RenderComp::Vertex);
 	UINT offset = 0;
 	

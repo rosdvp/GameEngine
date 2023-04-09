@@ -1,21 +1,25 @@
 #pragma once
 
 #include "entt.hpp"
-#include "RenderBackground.h"
-#include "RenderCameraComp.h"
-#include "RenderDrawer.h"
-#include "RenderShader.h"
-#include "TimeModule.h"
+#include "RenderImporter.h"
 
 
 namespace BlahEngine
 {
+class RenderDrawer;
+class TimeModule;
+class RenderShader;
+class RenderBackground;
 
 class IRenderModule
 {
 public:
 	virtual void SetRenderBackground(RenderBackground&& background) = 0;
-	virtual void AddRenderShader(RenderShader&& shader) = 0;
+
+	virtual void AddRenderShader(RenderShader* shader) = 0;
+
+	virtual void ImportModel(std::string fileName, RenderComp& render) = 0;
+	virtual void ImportTexture(std::wstring fileName, RenderComp& render) = 0;
 };
 
 class RenderModule : virtual public IRenderModule
@@ -28,16 +32,22 @@ public:
 
 	IDXGISwapChain* GetSwapChain() const;
 
+	void SetRenderBackground(RenderBackground&& background) override;
+
+	void AddRenderShader(RenderShader* shader) override;
+
+	void ImportModel(std::string fileName, RenderComp& render) override;
+	void ImportTexture(std::wstring fileName, RenderComp& render) override;
+
 	void BeginDrawFrame();
 	void DrawFrame();
 	void EndDrawFrame();
 
-	void SetRenderBackground(RenderBackground&& background) override;
-	void AddRenderShader(RenderShader&& shader) override;
-
 private:
 	const TimeModule* _timeModule;
 	entt::registry* _ecs;
+
+	RenderImporter _importer;
 
 	int _screenWidth;
 	int _screenHeight;

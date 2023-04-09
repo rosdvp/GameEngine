@@ -19,14 +19,14 @@ public:
 
 	~Vector3();
 
+	DirectX::XMVECTOR ToXMVector() const;
 
 	float Length() const;
 
 	Vector3 GetNorm() const;
 
-	Vector3 GetRotX(float angle) const;
-	Vector3 GetRotY(float angle) const;
-	Vector3 GetRotZ(float angle) const;
+	Vector3 Rotate(float roll, float pitch, float yaw) const;
+	Vector3 Rotate(const DirectX::XMVECTOR& quaternion) const;
 
 	Vector3& operator=(const Vector3& other);
 	Vector3& operator=(Vector3&& other) noexcept;

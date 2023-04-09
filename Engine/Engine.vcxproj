@@ -74,6 +74,7 @@
     <OutDir>$(SolutionDir)lib\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)lib\</OutDir>
@@ -122,12 +123,17 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\SSDPrograms\vcpkg\installed\x64-windows\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;DirectXTK.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\SSDPrograms\vcpkg\installed\x64-windows\debug\lib</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -140,6 +146,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Projects\CppProjects\GameEngine\engine_libs\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -148,6 +155,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>C:\Projects\CppProjects\GameEngine\engine_libs\release\libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Projects\CppProjects\GameEngine\engine_libs\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CollisionComp.h" />
@@ -156,6 +167,10 @@
     <ClInclude Include="ArrayResize.h" />
     <ClInclude Include="GeometryRenderBuilder.h" />
     <ClInclude Include="PhysicsModule.h" />
+    <ClInclude Include="RenderImporter.h" />
+    <ClInclude Include="RenderShaderSimple.h" />
+    <ClInclude Include="RenderShaderUnlit.h" />
+    <ClInclude Include="Rotation.h" />
     <ClInclude Include="SystemsModule.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="InputEvents.h" />
@@ -183,6 +198,10 @@
   <ItemGroup>
     <ClCompile Include="GeometryRenderBuilder.cpp" />
     <ClCompile Include="PhysicsModule.cpp" />
+    <ClCompile Include="RenderImporter.cpp" />
+    <ClCompile Include="RenderShaderSimple.cpp" />
+    <ClCompile Include="RenderShaderUnlit.cpp" />
+    <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="SystemsModule.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="InputModule.cpp" />

@@ -1,12 +1,14 @@
 #pragma once
 #include "pch.h"
 
+#include "Vector3.h"
+
 
 namespace BlahEngine
 {
 struct RenderCameraComp
 {
-	bool IsOrthographic;
+	bool IsOrthographic = false;
 	float OrthoZoom = 1.0f;
 	float PerspectiveAngle = 1.0f;
 	

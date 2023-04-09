@@ -2,8 +2,12 @@
 #include "RenderModule.h"
 
 #include "Logger.h"
+#include "RenderBackground.h"
 #include "RenderCameraComp.h"
 #include "RenderComp.h"
+#include "RenderDrawer.h"
+#include "RenderShaderSimple.h"
+#include "RenderShaderUnlit.h"
 
 using namespace BlahEngine;
 using namespace DirectX;
@@ -16,7 +20,8 @@ RenderModule::RenderModule() :
 	_isInited(false)
 {
 	_renderBackgroundDefault = std::make_unique<RenderBackground>();
-	_renderShaders.push_back(std::make_unique<RenderShader>());
+	_renderShaders.push_back(std::make_unique<RenderShaderSimple>());
+	_renderShaders.push_back(std::make_unique<RenderShaderUnlit>());
 	_renderDrawers.push_back(std::make_unique<RenderDrawer>());
 }
 
@@ -195,13 +200,23 @@ void RenderModule::SetRenderBackground(RenderBackground&& background)
 	_renderBackgroundCustom = std::make_unique<RenderBackground>(background);
 }
 
-void RenderModule::AddRenderShader(RenderShader&& shader)
+void RenderModule::AddRenderShader(RenderShader* shader)
 {
 	if (!_isInited)
 		throw std::exception("render module is not initialized");
 
-	shader.Init(_device.Get());
-	_renderShaders.push_back(std::make_unique<RenderShader>(shader));
+	shader->Init(_device.Get());
+	_renderShaders.push_back(std::unique_ptr<RenderShader>(shader));
+}
+
+void RenderModule::ImportModel(std::string fileName, RenderComp& render)
+{
+	_importer.ImportModel(fileName, render);
+}
+
+void RenderModule::ImportTexture(std::wstring fileName, RenderComp& render)
+{
+	_importer.ImportTexture(_device.Get(), fileName, render);
 }
 
 
@@ -287,7 +302,7 @@ void RenderModule::DrawCamera()
 			XMMATRIX finalMatrix;
 			if (camera.IsOrthographic)
 			{
-				auto vectEye = XMVectorSet(tf.Pos.X, tf.Pos.Y, tf.Pos.Z, 0.0f);
+				auto vectEye = tf.Pos.ToXMVector();
 				auto vectAt = XMVectorSet(tf.Pos.X, tf.Pos.Y, 0.0f, 0.0f);
 				auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 				XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
@@ -300,11 +315,10 @@ void RenderModule::DrawCamera()
 			}
 			else
 			{
-				Vector3 vAt = tf.GetForward() + tf.Pos;
-
-				auto vectEye = XMVectorSet(tf.Pos.X, tf.Pos.Y, tf.Pos.Z, 0.0f);
-				auto vectAt = XMVectorSet(vAt.X, vAt.Y, vAt.Z, 0.0f);
+				auto vectEye = tf.Pos.ToXMVector();
 				auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+				XMVECTOR vectAt = (tf.GetForward() + tf.Pos).ToXMVector();
+				
 				XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
 
 				XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(

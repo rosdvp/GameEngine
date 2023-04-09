@@ -26,14 +26,14 @@ void GeometryRenderBuilder::BuildCube(RenderComp& render, const Color& color)
 {
 	RenderComp::Vertex vertices[] =
 	{
-		{{-1.0f, 1.0f, -1.0f}, color},
-		{{1.0f, 1.0f, -1.0f}, color},
-		{{-1.0f, -1.0f, -1.0f}, color},
-		{{1.0f, -1.0f, -1.0f}, color},
-		{{-1.0f, 1.0f, 1.0f}, color},
-		{{1.0f, 1.0f, 1.0f}, color},
-		{{-1.0f, -1.0f, 1.0f}, color},
-		{{1.0f, -1.0f, 1.0f}, color},
+		{{-0.5f, 0.5f, -0.5f}, color},
+		{{0.5f, 0.5f, -0.5f}, color},
+		{{-0.5f, -0.5f, -0.5f}, color},
+		{{0.5f, -0.5f, -0.5f}, color},
+		{{-0.5f, 0.5f, 0.5f}, color},
+		{{0.5f, 0.5f, 0.5f}, color},
+		{{-0.5f, -0.5f, 0.5f}, color},
+		{{0.5f, -0.5f, 0.5f}, color},
 	};
 	int indices[] =
 	{

@@ -7,49 +7,13 @@
 
 using namespace BlahEngine;
 
-void RenderShader::Init(ID3D11Device* device)
-{
-	D3D11_INPUT_ELEMENT_DESC layoutDesc[] =
-	{
-		{
-			"POSITION",
-			0,
-			DXGI_FORMAT_R32G32B32_FLOAT,
-			0,
-			0,
-			D3D11_INPUT_PER_VERTEX_DATA,
-			0
-		},
-		{
-			"COLOR",
-			0,
-			DXGI_FORMAT_R32G32B32A32_FLOAT,
-			0,
-			12,
-			D3D11_INPUT_PER_VERTEX_DATA,
-			0
-		}
-	};
-
-	CreateVertexShader(L"./Shaders/simple_shader.hlsl",
-		"VS",
-		"vs_5_0",
-		device,
-		layoutDesc,
-		2);
-
-	CreatePixelShader(
-		L"./Shaders/simple_shader.hlsl",
-		"PS",
-		"ps_5_0",
-		device);
-}
 
 void RenderShader::ApplyToContext(ID3D11DeviceContext* context)
 {
 	context->IASetInputLayout(_inputLayout.Get());
 	context->VSSetShader(_vertexShader.Get(), nullptr, 0);
 	context->PSSetShader(_pixelShader.Get(), nullptr, 0);
+	context->PSSetSamplers(0, 1, _sampler.GetAddressOf());
 }
 
 
@@ -113,6 +77,22 @@ void RenderShader::CreatePixelShader(const WCHAR* fileName, LPCSTR entryPoint, L
 	Logger::Debug("shaders", "pixel shader created, %S", fileName);
 }
 
+void RenderShader::CreateSampler(ID3D11Device* device)
+{
+	D3D11_SAMPLER_DESC samplerDesc{};
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	auto result = device->CreateSamplerState(&samplerDesc, _sampler.GetAddressOf());
+	if (FAILED(result))
+		throw std::exception("failed to create sampler");
+}
+
 
 void RenderShader::CompileShader(const WCHAR* fileName, LPCSTR entryPoint, LPCSTR shaderModel, ID3DBlob** outBlob)
 {
@@ -133,12 +113,9 @@ void RenderShader::CompileShader(const WCHAR* fileName, LPCSTR entryPoint, LPCST
 		if (errorMsg)
 		{
 			auto compileErrors = static_cast<char*>(errorMsg->GetBufferPointer());
-			throw std::exception(("shader compile error, " +
-				std::string(reinterpret_cast<const char*>(fileName)) +
-				", " +
-				compileErrors).data());
+
+			std::cout << "shader compile error (" << fileName << "), " << compileErrors << std::endl;
 		}
-		throw std::exception(("could not find shader, " +
-			std::string(reinterpret_cast<const char*>(fileName))).data());
+		std::cout << "could not find shader (" << fileName << ")" << std::endl;
 	}
 }

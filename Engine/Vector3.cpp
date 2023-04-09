@@ -2,8 +2,7 @@
 #include "Vector3.h"
 
 using namespace BlahEngine;
-
-const float  PI = 3.14159265358979f;
+using namespace DirectX;
 
 Vector3::Vector3():
 	X(0),
@@ -27,41 +26,45 @@ Vector3::Vector3(Vector3&& other) noexcept:
 
 Vector3::~Vector3() {}
 
+XMVECTOR Vector3::ToXMVector() const
+{
+	return { X, Y, Z };
+}
+
 float Vector3::Length() const
 {
+	if (X == 0 && Y == 0 && Z == 0)
+		return 0;
 	return sqrt(X * X + Y * Y + Z * Z);
 }
 
 Vector3 Vector3::GetNorm() const
 {
 	float length = Length();
+	if (length == 0)
+		return { 0, 0, 0 };
 	return { X / length, Y / length, Z / length };
 }
 
-Vector3 Vector3::GetRotX(float angle) const
+Vector3 Vector3::Rotate(float roll, float pitch, float yaw) const
 {
-	float rad = angle * PI  / 180.0f;
-	float cosA = cosf(rad);
-	float sinA = sinf(rad);
-	return { X, Y * cosA - Z * sinA, Y * sinA + Z * cosA };
+	auto q = XMQuaternionRotationRollPitchYaw(pitch * XM_PI / 180, yaw * XM_PI / 180, roll * XM_PI / 180);
+	return Rotate(XMQuaternionNormalize(q));
 }
 
-Vector3 Vector3::GetRotY(float angle) const
-{
-	float rad = angle * PI / 180.0f;
-	float cosA = cosf(rad);
-	float sinA = sinf(rad);
-	return { X * cosA + Z * sinA, Y, -X * sinA + Z * cosA };
-}
 
-Vector3 Vector3::GetRotZ(float angle) const
+Vector3 Vector3::Rotate(const XMVECTOR& quaternion) const
 {
-	float rad = angle * PI / 180.0f;
-	float cosA = cosf(rad);
-	float sinA = sinf(rad);
-	return { X * cosA - Y * sinA, X * sinA + Y * cosA, Z };
-}
+	auto v = ToXMVector();
+	auto inv = XMQuaternionInverse(quaternion);
+	v = XMQuaternionMultiply(quaternion, v);
+	v = XMQuaternionMultiply(v, inv);
+	return { v.m128_f32[0], v.m128_f32[1], v.m128_f32[2] };
 
+	//does not work!
+	//auto v = XMVector3Rotate({X, Y, Z}, quaternion);
+	//return { v.m128_f32[0], v.m128_f32[1], v.m128_f32[2] };
+}
 
 Vector3& Vector3::operator=(const Vector3& other)
 {
