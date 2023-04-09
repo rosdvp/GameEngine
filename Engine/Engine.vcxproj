@@ -167,8 +167,12 @@
     <ClInclude Include="ArrayResize.h" />
     <ClInclude Include="GeometryRenderBuilder.h" />
     <ClInclude Include="PhysicsModule.h" />
+    <ClInclude Include="RenderCameraDrawer.h" />
     <ClInclude Include="RenderImporter.h" />
-    <ClInclude Include="RenderShaderSimple.h" />
+    <ClInclude Include="RenderLightComp.h" />
+    <ClInclude Include="RenderLightDrawer.h" />
+    <ClInclude Include="RenderShaderSimpleUnlit.h" />
+    <ClInclude Include="RenderShaderSimpleLit.h" />
     <ClInclude Include="RenderShaderUnlit.h" />
     <ClInclude Include="Rotation.h" />
     <ClInclude Include="SystemsModule.h" />
@@ -198,8 +202,11 @@
   <ItemGroup>
     <ClCompile Include="GeometryRenderBuilder.cpp" />
     <ClCompile Include="PhysicsModule.cpp" />
+    <ClCompile Include="RenderCameraDrawer.cpp" />
     <ClCompile Include="RenderImporter.cpp" />
-    <ClCompile Include="RenderShaderSimple.cpp" />
+    <ClCompile Include="RenderLightDrawer.cpp" />
+    <ClCompile Include="RenderShaderSimpleUnlit.cpp" />
+    <ClCompile Include="RenderShaderSimpleLit.cpp" />
     <ClCompile Include="RenderShaderUnlit.cpp" />
     <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="SystemsModule.cpp" />

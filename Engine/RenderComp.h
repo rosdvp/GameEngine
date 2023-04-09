@@ -10,6 +10,7 @@ struct RenderComp
 	{
 		DirectX::XMFLOAT3 Pos;
 		DirectX::XMFLOAT4 Color;
+		DirectX::XMFLOAT3 Normal;
 		DirectX::XMFLOAT2 TexCoord;
 	};
 
@@ -24,7 +25,7 @@ struct RenderComp
 	std::unique_ptr<int[]> Indices = nullptr;
 	ComPtr<ID3D11Buffer> IndexBuffer;
 
-	ComPtr<ID3D11Buffer> MatrixConstantBuffer;
+	ComPtr<ID3D11Buffer> TransformConstantBuffer;
 	
 	ComPtr<ID3D11ShaderResourceView> Texture;
 };

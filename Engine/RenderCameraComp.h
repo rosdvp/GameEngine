@@ -12,7 +12,7 @@ struct RenderCameraComp
 	float OrthoZoom = 1.0f;
 	float PerspectiveAngle = 1.0f;
 	
-	ComPtr<ID3D11Buffer> ConstantBuffer;
+	ComPtr<ID3D11Buffer> ViewAndProjConstantBuffer;
 
 	bool IsChanged() const
 	{
@@ -34,7 +34,7 @@ struct RenderCameraComp
 
 	void Release()
 	{
-		ConstantBuffer.Reset();
+		ViewAndProjConstantBuffer.Reset();
 	}
 
 private:

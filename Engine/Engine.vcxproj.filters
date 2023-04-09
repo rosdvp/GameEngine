@@ -162,10 +162,22 @@
     <ClInclude Include="Rotation.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="RenderShaderSimple.h">
+    <ClInclude Include="RenderShaderSimpleUnlit.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="RenderShaderUnlit.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderSimpleLit.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCameraDrawer.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLightDrawer.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLightComp.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
   </ItemGroup>
@@ -227,10 +239,19 @@
     <ClCompile Include="Rotation.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="RenderShaderSimple.cpp">
+    <ClCompile Include="RenderShaderSimpleUnlit.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="RenderShaderUnlit.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShaderSimpleLit.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderCameraDrawer.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLightDrawer.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
   </ItemGroup>

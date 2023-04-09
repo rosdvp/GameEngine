@@ -65,7 +65,7 @@ void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context,
 		result = device->CreateBuffer(
 			&constantBufferDesc,
 			nullptr,
-			render.MatrixConstantBuffer.GetAddressOf());
+			render.TransformConstantBuffer.GetAddressOf());
 		if (FAILED(result))
 			throw std::exception("failed to create matrix constant buffer");
 
@@ -82,14 +82,14 @@ void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context,
 			XMMatrixTranslation(tf.GlobalPos.X, tf.GlobalPos.Y, tf.GlobalPos.Z);
 		matrix = XMMatrixTranspose(matrix);
 		context->UpdateSubresource(
-			render.MatrixConstantBuffer.Get(),
+			render.TransformConstantBuffer.Get(),
 			0,
 			nullptr,
 			&matrix,
 			0,
 			0);
 	}
-	context->VSSetConstantBuffers(1, 1, render.MatrixConstantBuffer.GetAddressOf());
+	context->VSSetConstantBuffers(1, 1, render.TransformConstantBuffer.GetAddressOf());
 	
 	context->PSSetShaderResources(0, 1, render.Texture.GetAddressOf());
 		

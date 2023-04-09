@@ -26,30 +26,58 @@ void GeometryRenderBuilder::BuildCube(RenderComp& render, const Color& color)
 {
 	RenderComp::Vertex vertices[] =
 	{
-		{{-0.5f, 0.5f, -0.5f}, color},
-		{{0.5f, 0.5f, -0.5f}, color},
-		{{-0.5f, -0.5f, -0.5f}, color},
-		{{0.5f, -0.5f, -0.5f}, color},
-		{{-0.5f, 0.5f, 0.5f}, color},
-		{{0.5f, 0.5f, 0.5f}, color},
-		{{-0.5f, -0.5f, 0.5f}, color},
-		{{0.5f, -0.5f, 0.5f}, color},
+		{XMFLOAT3(-0.5f, 0.5f, -0.5f), color, XMFLOAT3(0.0f, 1.0f, 0.0f)},
+		{XMFLOAT3(0.5f, 0.5f, -0.5f), color, XMFLOAT3(0.0f, 1.0f, 0.0f)},
+		{XMFLOAT3(0.5f, 0.5f, 0.5f), color, XMFLOAT3(0.0f, 1.0f, 0.0f)},
+		{XMFLOAT3(-0.5f, 0.5f, 0.5f), color, XMFLOAT3(0.0f, 1.0f, 0.0f)},
+
+		{XMFLOAT3(-0.5f, -0.5f, -0.5f), color, XMFLOAT3(0.0f, -1.0f, 0.0f)},
+		{XMFLOAT3(0.5f, -0.5f, -0.5f), color, XMFLOAT3(0.0f, -1.0f, 0.0f)},
+		{XMFLOAT3(0.5f, -0.5f, 0.5f), color, XMFLOAT3(0.0f, -1.0f, 0.0f)},
+		{XMFLOAT3(-0.5f, -0.5f, 0.5f), color, XMFLOAT3(0.0f, -1.0f, 0.0f)},
+
+		{XMFLOAT3(-0.5f, -0.5f, 0.5f), color, XMFLOAT3(-1.0f, 0.0f, 0.0f)},
+		{XMFLOAT3(-0.5f, -0.5f, -0.5f), color, XMFLOAT3(-1.0f, 0.0f, 0.0f)},
+		{XMFLOAT3(-0.5f, 0.5f, -0.5f), color, XMFLOAT3(-1.0f, 0.0f, 0.0f)},
+		{XMFLOAT3(-0.5f, 0.5f, 0.5f), color, XMFLOAT3(-1.0f, 0.0f, 0.0f)},
+
+		{XMFLOAT3(0.5f, -0.5f, 0.5f), color, XMFLOAT3(1.0f, 0.0f, 0.0f)},
+		{XMFLOAT3(0.5f, -0.5f, -0.5f), color, XMFLOAT3(1.0f, 0.0f, 0.0f)},
+		{XMFLOAT3(0.5f, 0.5f, -0.5f), color, XMFLOAT3(1.0f, 0.0f, 0.0f)},
+		{XMFLOAT3(0.5f, 0.5f, 0.5f), color, XMFLOAT3(1.0f, 0.0f, 0.0f)},
+
+		{XMFLOAT3(-0.5f, -0.5f, -0.5f), color, XMFLOAT3(0.0f, 0.0f, -1.0f)},
+		{XMFLOAT3(0.5f, -0.5f, -0.5f), color, XMFLOAT3(0.0f, 0.0f, -1.0f)},
+		{XMFLOAT3(0.5f, 0.5f, -0.5f), color, XMFLOAT3(0.0f, 0.0f, -1.0f)},
+		{XMFLOAT3(-0.5f, 0.5f, -0.5f), color, XMFLOAT3(0.0f, 0.0f, -1.0f)},
+
+		{XMFLOAT3(-0.5f, -0.5f, 0.5f), color, XMFLOAT3(0.0f, 0.0f, 1.0f)},
+		{XMFLOAT3(0.5f, -0.5f, 0.5f), color, XMFLOAT3(0.0f, 0.0f, 1.0f)},
+		{XMFLOAT3(0.5f, 0.5f, 0.5f), color, XMFLOAT3(0.0f, 0.0f, 1.0f)},
+		{XMFLOAT3(-0.5f, 0.5f, 0.5f), color, XMFLOAT3(0.0f, 0.0f, 1.0f)},
 	};
+
 	int indices[] =
 	{
-		0, 1, 2, // side 1
+		3, 1, 0,
 		2, 1, 3,
-		4, 0, 6, // side 2
-		6, 0, 2,
-		7, 5, 6, // side 3
-		6, 5, 4,
-		3, 1, 7, // side 4
-		7, 1, 5,
-		4, 5, 0, // side 5
-		0, 5, 1,
-		3, 7, 2, // side 6
-		2, 7, 6,
+
+		6, 4, 5,
+		7, 4, 6,
+
+		11, 9, 8,
+		10, 9, 11,
+
+		14, 12, 13,
+		15, 12, 14,
+
+		19, 17, 16,
+		18, 17, 19,
+
+		22, 20, 21,
+		23, 20, 22
 	};
+
 	FillRender(render, vertices, std::size(vertices), indices, std::size(indices));
 }
 

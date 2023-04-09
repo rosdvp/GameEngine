@@ -20,6 +20,7 @@ public:
 	~Vector3();
 
 	DirectX::XMVECTOR ToXMVector() const;
+	DirectX::XMFLOAT4 ToXMFloat4() const;
 
 	float Length() const;
 

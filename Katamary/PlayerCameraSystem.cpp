@@ -12,7 +12,6 @@ void PlayerCameraSystem::Init()
     auto& cameraComp = _ecs->emplace<RenderCameraComp>(_entCamera);
     cameraComp.IsOrthographic = false;
     cameraComp.PerspectiveAngle = 0.7f;
-    //cameraComp.IsLookAtMode = true;
 }
 
 void PlayerCameraSystem::Run()

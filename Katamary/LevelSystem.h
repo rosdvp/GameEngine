@@ -8,6 +8,8 @@ public:
 	void Init() override;
 
 private:
+	void CreateLight();
+
 	void CreateGround();
 
 	void CreateObstacle(BlahEngine::Vector3 pos);

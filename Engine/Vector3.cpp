@@ -31,6 +31,11 @@ XMVECTOR Vector3::ToXMVector() const
 	return { X, Y, Z };
 }
 
+XMFLOAT4 Vector3::ToXMFloat4() const
+{
+	return { X, Y, Z, 0};
+}
+
 float Vector3::Length() const
 {
 	if (X == 0 && Y == 0 && Z == 0)

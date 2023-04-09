@@ -1,7 +1,9 @@
 #pragma once
 
 #include "entt.hpp"
+#include "RenderCameraDrawer.h"
 #include "RenderImporter.h"
+#include "RenderLightDrawer.h"
 
 
 namespace BlahEngine
@@ -64,9 +66,18 @@ private:
 	std::unique_ptr<RenderBackground> _renderBackgroundDefault;
 	std::unique_ptr<RenderBackground> _renderBackgroundCustom;
 
-	std::vector<std::unique_ptr<RenderDrawer>> _renderDrawers;
 	std::vector<std::unique_ptr<RenderShader>> _renderShaders;
+	std::vector<std::unique_ptr<RenderDrawer>> _renderDrawers;
 
-	void DrawCamera();
+	RenderCameraDrawer _cameraDrawer;
+	RenderLightDrawer _lightDrawer;
+
+public:
+	enum EShaderId
+	{
+		SimpleUnlit,
+		SimpleLit,
+		Unlit
+	};
 };
 }
