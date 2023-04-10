@@ -212,9 +212,9 @@ void RenderModule::AddRenderShader(RenderShader* shader)
 	_renderShaders.push_back(std::unique_ptr<RenderShader>(shader));
 }
 
-void RenderModule::ImportModel(std::string fileName, RenderComp& render)
+void RenderModule::ImportModel(std::string fileName, float scaleFactor, RenderComp& render)
 {
-	_importer.ImportModel(fileName, render);
+	_importer.ImportModel(fileName, scaleFactor, render);
 }
 
 void RenderModule::ImportTexture(std::wstring fileName, RenderComp& render)

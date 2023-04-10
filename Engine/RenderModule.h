@@ -20,7 +20,7 @@ public:
 
 	virtual void AddRenderShader(RenderShader* shader) = 0;
 
-	virtual void ImportModel(std::string fileName, RenderComp& render) = 0;
+	virtual void ImportModel(std::string fileName, float scaleFactor, RenderComp& render) = 0;
 	virtual void ImportTexture(std::wstring fileName, RenderComp& render) = 0;
 };
 
@@ -38,7 +38,7 @@ public:
 
 	void AddRenderShader(RenderShader* shader) override;
 
-	void ImportModel(std::string fileName, RenderComp& render) override;
+	void ImportModel(std::string fileName, float scaleFactor, RenderComp& render) override;
 	void ImportTexture(std::wstring fileName, RenderComp& render) override;
 
 	void BeginDrawFrame();

@@ -12,9 +12,10 @@
 
 
 using namespace BlahEngine;
+using namespace DirectX;
 
 
-void RenderImporter::ImportModel(std::string fileName, RenderComp& render)
+void RenderImporter::ImportModel(std::string fileName, float scaleFactor, RenderComp& render)
 {
 	Assimp::Importer importer;
 	
@@ -43,7 +44,12 @@ void RenderImporter::ImportModel(std::string fileName, RenderComp& render)
 	for (int i = 0; i < render.VerticesCount; i++)
 	{
 		RenderComp::Vertex vertex;
-		vertex.Pos = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+		vertex.Pos =
+		{
+			mesh->mVertices[i].x * scaleFactor,
+			mesh->mVertices[i].y * scaleFactor,
+			mesh->mVertices[i].z * scaleFactor
+		};
 		vertex.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 

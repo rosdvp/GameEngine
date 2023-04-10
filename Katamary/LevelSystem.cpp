@@ -15,7 +15,9 @@ void LevelSystem::Init()
 	CreateObstacle({ -5, 1.0f,  5 });
 	CreateObstacle({ -5, 1.0f, -5 });
 
-	CreateObstacle({ 0, 2, 10 }, "./Models/duck.obj", L"./Models/duck.dds");
+	CreateObstacle({ 0, 1.0f, 10 }, 
+		"./Models/duck.obj", L"./Models/duck.dds", 
+		0.2f);
 }
 
 void LevelSystem::CreateLight()
@@ -56,19 +58,20 @@ void LevelSystem::CreateObstacle(Vector3 pos)
 }
 
 
-void LevelSystem::CreateObstacle(Vector3 pos, std::string pathModelFile, std::wstring pathTextureFile)
+void LevelSystem::CreateObstacle(Vector3 pos, std::string pathModelFile, std::wstring pathTextureFile, float scaleFactor)
 {
 	auto ent = _ecs->create();
 
 	auto& tf = _ecs->emplace<TransformComp>(ent);
 	tf.Pos = pos;
 	tf.Rot.AddLocal(0, 90, 0);
-	tf.Scale = { 0.3f, 0.3f, 0.3f };
+	//tf.Scale = { 0.3f, 0.3f, 0.3f };
+	//tf.Scale = { 0.5f, 0.5f, 0.5f };
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.DrawerId = 0;
 	render.ShaderId = RenderModule::EShaderId::Lit;
 
-	_engine->Render().ImportModel(pathModelFile, render);
+	_engine->Render().ImportModel(pathModelFile, scaleFactor, render);
 	_engine->Render().ImportTexture(pathTextureFile, render);
 }
