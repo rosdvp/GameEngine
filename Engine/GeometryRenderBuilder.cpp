@@ -112,7 +112,7 @@ void GeometryRenderBuilder::BuildSphere(RenderComp& render, size_t tessellation,
 			dx *= dxz;
 			dz *= dxz;
 
-			vertices.push_back({ {dx, dy, dz}, color});
+			vertices.push_back({ {dx, dy, dz}, color, {dx, dy, dz}});
 		}
 	}
 

@@ -77,7 +77,8 @@ public:
 	{
 		SimpleUnlit,
 		SimpleLit,
-		Unlit
+		Unlit,
+		Lit
 	};
 };
 }

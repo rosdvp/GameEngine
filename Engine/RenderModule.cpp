@@ -3,9 +3,9 @@
 
 #include "Logger.h"
 #include "RenderBackground.h"
-#include "RenderCameraComp.h"
 #include "RenderComp.h"
 #include "RenderDrawer.h"
+#include "RenderShaderLit.h"
 #include "RenderShaderSimpleLit.h"
 #include "RenderShaderSimpleUnlit.h"
 #include "RenderShaderUnlit.h"
@@ -25,6 +25,7 @@ RenderModule::RenderModule() :
 	_renderShaders.push_back(std::make_unique<RenderShaderSimpleUnlit>());
 	_renderShaders.push_back(std::make_unique<RenderShaderSimpleLit>());
 	_renderShaders.push_back(std::make_unique<RenderShaderUnlit>());
+	_renderShaders.push_back(std::make_unique<RenderShaderLit>());
 
 	_renderDrawers.push_back(std::make_unique<RenderDrawer>());
 }

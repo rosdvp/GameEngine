@@ -14,18 +14,22 @@ cbuffer LightBuffer : register(b2)
     float4 LightColor;
 }
 
+SamplerState Sampler : register(s0);
+Texture2D Tx : register(t0);
+
+
 struct VS_IN
 {
 	float4 Pos : POSITION;
 	float4 Color : COLOR;
-    float3 Norm : NORMAL;
+    float3 Normal : NORMAL;
 };
 
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
-    float3 Norm : TEXCOORD0;
+    float3 Normal : TEXCOORD0;
 };
 
 
@@ -35,7 +39,7 @@ VS_OUTPUT VS(VS_IN input)
     output.Pos = mul(input.Pos, TransformMatrix);
     output.Pos = mul(output.Pos, CameraMatrix);
     output.Color = input.Color;
-    output.Norm = mul(input.Norm, TransformMatrix);
+    output.Normal = normalize(mul(input.Normal, TransformMatrix));
     return output;
 }
 
@@ -44,7 +48,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 {
     float4 color = 0;
 
-    color += saturate(dot((float3)LightDir, input.Norm) * LightColor);
+    color += saturate(dot((float3)LightDir, input.Normal) * LightColor);
+    color *= input.Color;
     color.a = 1;
 
     return color;

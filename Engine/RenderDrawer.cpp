@@ -58,7 +58,7 @@ void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context,
 
 		D3D11_BUFFER_DESC constantBufferDesc = {};
 		constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-		constantBufferDesc.ByteWidth = sizeof(XMMATRIX);
+		constantBufferDesc.ByteWidth = sizeof(TransformConstantBufferData);
 		constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		constantBufferDesc.CPUAccessFlags = 0;
 
@@ -74,18 +74,23 @@ void RenderDrawer::Draw(ID3D11Device* device, ID3D11DeviceContext* context,
 
 	if (shouldUpdateMatrix || tf.IsPosOrRotOrScaleChanged())
 	{
-		auto matrix =
+		auto worldMatrix =
 			XMMatrixScaling(tf.Scale.X, tf.Scale.Y, tf.Scale.Z) *
 			//XMMatrixRotationRollPitchYaw(tf.Rot.X, tf.Rot.Y, tf.Rot.Z) *
 			//XMMatrixRotationRollPitchYaw(rot.X, rot.Y, rot.Z) *
 			XMMatrixRotationQuaternion(tf.Rot.GetQuaternion()) *
 			XMMatrixTranslation(tf.GlobalPos.X, tf.GlobalPos.Y, tf.GlobalPos.Z);
-		matrix = XMMatrixTranspose(matrix);
+		
+		TransformConstantBufferData data =
+		{
+			XMMatrixTranspose(worldMatrix)
+		};
+
 		context->UpdateSubresource(
 			render.TransformConstantBuffer.Get(),
 			0,
 			nullptr,
-			&matrix,
+			&data,
 			0,
 			0);
 	}

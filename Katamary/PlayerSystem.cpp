@@ -17,7 +17,7 @@ void PlayerSystem::Init()
 	tf.Scale = { 1, 1, 1 };
 
 	auto& render = _ecs->emplace<RenderComp>(_entPlayer);
-	render.ShaderId = RenderModule::EShaderId::SimpleUnlit;
+	render.ShaderId = RenderModule::EShaderId::SimpleLit;
 	render.DrawerId = 0;
 
 	GeometryRenderBuilder::BuildSphere(render, 10, Color::Pink());

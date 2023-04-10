@@ -17,12 +17,19 @@ using namespace BlahEngine;
 void RenderImporter::ImportModel(std::string fileName, RenderComp& render)
 {
 	Assimp::Importer importer;
-
+	
 	const auto model = importer.ReadFile(fileName.data(),
-		aiProcess_Triangulate | 
-		aiProcess_ConvertToLeftHanded |
-		aiProcess_CalcTangentSpace |
-		aiProcess_JoinIdenticalVertices);
+		aiProcess_Triangulate
+		| aiProcess_ConvertToLeftHanded
+		//| aiProcess_DropNormals
+		//| aiProcess_GenNormals
+		| aiProcess_GenSmoothNormals
+		//| aiProcess_FixInfacingNormals
+		| aiProcess_FindDegenerates
+		| aiProcess_FindInvalidData
+		| aiProcess_CalcTangentSpace
+		//| aiProcess_JoinIdenticalVertices
+	);
 
 	if (model == nullptr)
 	{
@@ -38,6 +45,7 @@ void RenderImporter::ImportModel(std::string fileName, RenderComp& render)
 		RenderComp::Vertex vertex;
 		vertex.Pos = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 		vertex.Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
 
 		if (mesh->mTextureCoords[0])
 		{

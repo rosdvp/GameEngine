@@ -171,6 +171,7 @@
     <ClInclude Include="RenderImporter.h" />
     <ClInclude Include="RenderLightComp.h" />
     <ClInclude Include="RenderLightDrawer.h" />
+    <ClInclude Include="RenderShaderLit.h" />
     <ClInclude Include="RenderShaderSimpleUnlit.h" />
     <ClInclude Include="RenderShaderSimpleLit.h" />
     <ClInclude Include="RenderShaderUnlit.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="RenderCameraDrawer.cpp" />
     <ClCompile Include="RenderImporter.cpp" />
     <ClCompile Include="RenderLightDrawer.cpp" />
+    <ClCompile Include="RenderShaderLit.cpp" />
     <ClCompile Include="RenderShaderSimpleUnlit.cpp" />
     <ClCompile Include="RenderShaderSimpleLit.cpp" />
     <ClCompile Include="RenderShaderUnlit.cpp" />

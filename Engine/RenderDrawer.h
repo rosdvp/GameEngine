@@ -12,5 +12,11 @@ public:
 	
 	void Draw(ID3D11Device* device, ID3D11DeviceContext* context, const TransformComp& tf, RenderComp& render);
 private:
+
+	struct TransformConstantBufferData
+	{
+		DirectX::XMMATRIX WorldMatrix;
+		DirectX::XMMATRIX WorldInverseTransposeMatrix;
+	};
 };
 }
