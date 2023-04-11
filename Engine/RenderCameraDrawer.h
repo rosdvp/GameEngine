@@ -2,6 +2,9 @@
 
 namespace BlahEngine
 {
+struct TransformComp;
+struct RenderCameraComp;
+
 class RenderCameraDrawer
 {
 public:
@@ -21,5 +24,14 @@ private:
 
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _context;
+
+	void CreateCameraConstantBuffer(RenderCameraComp& camera);
+	void UpdateCameraConstantBuffer(const TransformComp& tf, RenderCameraComp& camera);
+	
+	struct CameraConstantBufferData
+	{
+		DirectX::XMMATRIX CameraMatrix;
+		DirectX::XMFLOAT3 CameraPos;
+	};
 };
 }

@@ -44,6 +44,11 @@ void PlayerCameraSystem::Run()
 	cameraTf.Rot.AddLocal(0, pitch, 0);
     cameraTf.Rot.AddGlobal(0, 0, -yaw);
 
+    if (yaw != 0 || pitch != 0)
+    {
+        //_engine->Stats().OutputStats();
+    }
+
     Vector3 deltaPos = { 0, 0, -DIST_TO_PLAYER };
     deltaPos = deltaPos.Rotate(cameraTf.Rot.GetQuaternion());
     cameraTf.Pos = playerTf.Pos + deltaPos;

@@ -123,17 +123,11 @@
     <ClInclude Include="Vector3.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="RenderDrawer.h">
+    <ClInclude Include="RenderObjectDrawer.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="UiModule.h">
       <Filter>Header Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryRenderBuilder.h">
-      <Filter>Header Files\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="Color.h">
-      <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="StatsModule.h">
       <Filter>Header Files\Stats</Filter>
@@ -183,6 +177,15 @@
     <ClInclude Include="RenderShaderLit.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryRenderBuilder.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Hasher.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -221,7 +224,7 @@
     <ClCompile Include="PhysicsModule.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="RenderDrawer.cpp">
+    <ClCompile Include="RenderObjectDrawer.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="UiModule.cpp">

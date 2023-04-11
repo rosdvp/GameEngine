@@ -4,7 +4,7 @@
 #include "Logger.h"
 #include "RenderBackground.h"
 #include "RenderComp.h"
-#include "RenderDrawer.h"
+#include "RenderObjectDrawer.h"
 #include "RenderShaderLit.h"
 #include "RenderShaderSimpleLit.h"
 #include "RenderShaderSimpleUnlit.h"
@@ -20,14 +20,12 @@ RenderModule::RenderModule() :
 	_screenHeight(0),
 	_isInited(false)
 {
-	_renderBackgroundDefault = std::make_unique<RenderBackground>();
+	_backgroundDefault = std::make_unique<RenderBackground>();
 
-	_renderShaders.push_back(std::make_unique<RenderShaderSimpleUnlit>());
-	_renderShaders.push_back(std::make_unique<RenderShaderSimpleLit>());
-	_renderShaders.push_back(std::make_unique<RenderShaderUnlit>());
-	_renderShaders.push_back(std::make_unique<RenderShaderLit>());
-
-	_renderDrawers.push_back(std::make_unique<RenderDrawer>());
+	_shaders.push_back(std::make_unique<RenderShaderSimpleUnlit>());
+	_shaders.push_back(std::make_unique<RenderShaderSimpleLit>());
+	_shaders.push_back(std::make_unique<RenderShaderUnlit>());
+	_shaders.push_back(std::make_unique<RenderShaderLit>());
 }
 
 RenderModule::~RenderModule() noexcept(false)
@@ -71,7 +69,6 @@ void RenderModule::Init(entt::registry* ecs, const TimeModule* timeModule,
 	int featureLevelsCount = ARRAYSIZE(featureLevels);
 
 	//--------------------------------------------------
-	//front buffer description
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
 	swapChainDesc.BufferCount = 2;
 	swapChainDesc.BufferDesc.Width = screenWidth;
@@ -176,13 +173,14 @@ void RenderModule::Init(entt::registry* ecs, const TimeModule* timeModule,
 
 	//--------------------------------------------------
 
-	for (auto& s : _renderShaders)
+	for (auto& s : _shaders)
 		s->Init(_device.Get());
 	
 	_cameraDrawer.Init(ecs, _device.Get(), _context.Get(), screenWidth, screenHeight);
 	_lightDrawer.Init(ecs, _device.Get(), _context.Get());
+	_objectDrawer.Init(_device.Get(), _context.Get());
 
-	_renderBackgroundDefault->Init(_device.Get(), _timeModule);
+	_backgroundDefault->Init(_device.Get(), _timeModule);
 
 	_isInited = true;
 	Logger::Debug("render module", "initialized");
@@ -200,7 +198,7 @@ void RenderModule::SetRenderBackground(RenderBackground&& background)
 		throw std::exception("render module is not initialized");
 
 	background.Init(_device.Get(), _timeModule);
-	_renderBackgroundCustom = std::make_unique<RenderBackground>(background);
+	_backgroundCustom = std::make_unique<RenderBackground>(background);
 }
 
 void RenderModule::AddRenderShader(RenderShader* shader)
@@ -209,7 +207,7 @@ void RenderModule::AddRenderShader(RenderShader* shader)
 		throw std::exception("render module is not initialized");
 
 	shader->Init(_device.Get());
-	_renderShaders.push_back(std::unique_ptr<RenderShader>(shader));
+	_shaders.push_back(std::unique_ptr<RenderShader>(shader));
 }
 
 void RenderModule::ImportModel(std::string fileName, float scaleFactor, RenderComp& render)
@@ -248,9 +246,9 @@ void RenderModule::BeginDrawFrame()
 
 void RenderModule::DrawFrame()
 {
-	(_renderBackgroundCustom != nullptr
-		? _renderBackgroundCustom
-		: _renderBackgroundDefault)
+	(_backgroundCustom != nullptr
+		? _backgroundCustom
+		: _backgroundDefault)
 		->DrawFrame(_context.Get(), _renderTargetView.Get());
 
 	_cameraDrawer.Draw();
@@ -261,8 +259,8 @@ void RenderModule::DrawFrame()
 	{
 		auto [tf, render] = view.get<const TransformComp, RenderComp>(ent);
 
-		_renderShaders[render.ShaderId]->ApplyToContext(_context.Get());
-		_renderDrawers[render.DrawerId]->Draw(_device.Get(), _context.Get(), tf, render);
+		_shaders[render.ShaderId]->ApplyToContext(_context.Get());
+		_objectDrawer.Draw(tf, render);
 	}
 }
 

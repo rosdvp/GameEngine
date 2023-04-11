@@ -14,8 +14,15 @@ struct RenderComp
 		DirectX::XMFLOAT2 TexCoord;
 	};
 
+	struct Material
+	{
+		float Diffuse;
+		float Ambient;
+		float Specular;
+		float SpecularSize;
+	};
+
 	int ShaderId = -1;
-	int DrawerId = -1;
 
 	int VerticesCount = 0;
 	std::unique_ptr<Vertex[]> Vertices = nullptr;
@@ -26,6 +33,9 @@ struct RenderComp
 	ComPtr<ID3D11Buffer> IndexBuffer;
 
 	ComPtr<ID3D11Buffer> TransformConstantBuffer;
+
+	Material Mat;
+	ComPtr<ID3D11Buffer> MaterialConstantBuffer;
 	
 	ComPtr<ID3D11ShaderResourceView> Texture;
 };

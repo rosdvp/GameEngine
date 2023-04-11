@@ -101,3 +101,17 @@ void StatsModule::HideDisplay()
 	_ecs->destroy(_entDisplay);
 	_entDisplay = entt::null;
 }
+
+void StatsModule::OutputStats()
+{
+	int fps = static_cast<int>(1.0f / _timeModule->GetFrameDeltaSecs());
+	auto str = "fps: " + std::to_string(fps) +
+		"\nms: " + std::to_string(_timeModule->GetFrameDeltaSecs() * 1000) +
+		"\ngame: " + std::to_string(_gameplayMS * 1000) +
+		"\nphysics: " + std::to_string(_physicsMS * 1000) +
+		"\nrender: " + std::to_string(_renderMS * 1000);
+
+	std::cout << "----------stats--------------" << std::endl;
+	std::cout << str << std::endl;
+	std::cout << "-----------------------------" << std::endl;
+}

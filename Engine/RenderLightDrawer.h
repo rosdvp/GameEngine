@@ -19,12 +19,11 @@ private:
 
 	ComPtr<ID3D11Buffer> _lightConstantBuffer;
 
-	
-	struct LightBufferData
+	struct LightConstantBufferData
 	{
-		DirectX::XMFLOAT4 LightDir;
+		float AmbientIntensity;
+		DirectX::XMFLOAT3 LightDir;
 		DirectX::XMFLOAT4 LightColor;
 	};
-	LightBufferData _lightBufferData;
 };
 }

@@ -15,9 +15,9 @@ void LevelSystem::Init()
 	CreateObstacle({ -5, 1.0f,  5 });
 	CreateObstacle({ -5, 1.0f, -5 });
 
-	CreateObstacle({ 0, 1.0f, 10 }, 
-		"./Models/duck.obj", L"./Models/duck.dds", 
-		0.2f);
+	//CreateObstacle({ 0, 1.0f, 10 }, 
+	//	"./Models/duck.obj", L"./Models/duck.dds", 
+	//	0.2f);
 }
 
 void LevelSystem::CreateLight()
@@ -29,6 +29,7 @@ void LevelSystem::CreateLight()
 
 	auto& light = _ecs->emplace<RenderLightComp>(ent);
 	light.Color = Color::White();
+	light.AmbientIntensity = 1.0f;
 }
 
 void LevelSystem::CreateGround()
@@ -39,7 +40,6 @@ void LevelSystem::CreateGround()
 	tf.Scale = { 100, 1, 100 };
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
-	render.DrawerId = 0;
 	render.ShaderId = RenderModule::EShaderId::SimpleUnlit;
 	GeometryRenderBuilder::BuildCube(render, Color::Grey());
 }
@@ -52,8 +52,10 @@ void LevelSystem::CreateObstacle(Vector3 pos)
 	tf.Pos = pos;
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
-	render.DrawerId = 0;
 	render.ShaderId = RenderModule::EShaderId::SimpleLit;
+	render.Mat = { 0.5f, 0.1f, 0.5f, 30 };
+	//render.Mat = { 0.2775f, 0.23125f, 0.773911f, 89.6 };
+
 	GeometryRenderBuilder::BuildCube(render, Color::Green());
 }
 
@@ -69,7 +71,6 @@ void LevelSystem::CreateObstacle(Vector3 pos, std::string pathModelFile, std::ws
 	//tf.Scale = { 0.5f, 0.5f, 0.5f };
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
-	render.DrawerId = 0;
 	render.ShaderId = RenderModule::EShaderId::Lit;
 
 	_engine->Render().ImportModel(pathModelFile, scaleFactor, render);

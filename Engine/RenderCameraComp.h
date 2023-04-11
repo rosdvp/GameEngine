@@ -24,20 +24,14 @@ struct RenderCameraComp
 		_lastHash = GetHash();
 	}
 
-	size_t GetHash() const
-	{
-		std::size_t h1 = std::hash<bool>{}(IsOrthographic);
-		std::size_t h2 = std::hash<float>{}(OrthoZoom);
-		return h1 ^ (h2 << 1);
-	}
-
-
-	void Release()
-	{
-		ViewAndProjConstantBuffer.Reset();
-	}
-
 private:
-	size_t _lastHash = 0;
+	std::size_t _lastHash = 0;
+
+	std::size_t GetHash() const
+	{
+		std::size_t h = 0;
+		HashCombine(h, IsOrthographic, OrthoZoom, PerspectiveAngle);
+		return h;
+	}
 };
 }

@@ -37,67 +37,81 @@ void RenderCameraDrawer::Draw()
 		bool shouldUpdateBuffer = false;
 		if (camera.ViewAndProjConstantBuffer.Get() == nullptr)
 		{
-			D3D11_BUFFER_DESC constantBufferDesc = {};
-			constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-			constantBufferDesc.ByteWidth = sizeof(XMMATRIX);
-			constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			constantBufferDesc.CPUAccessFlags = 0;
-
-			HRESULT result = _device->CreateBuffer(
-				&constantBufferDesc,
-				nullptr,
-				camera.ViewAndProjConstantBuffer.GetAddressOf());
-			if (FAILED(result))
-				throw std::exception("failed to create camera constant buffer");
-
+			CreateCameraConstantBuffer(camera);
 			shouldUpdateBuffer = true;
 		}
 
 		if (shouldUpdateBuffer || tf.IsPosOrRotOrScaleChanged() || camera.IsChanged())
 		{
-			XMMATRIX finalMatrix;
-			if (camera.IsOrthographic)
-			{
-				auto vectEye = tf.Pos.ToXMVector();
-				auto vectAt = XMVectorSet(tf.Pos.X, tf.Pos.Y, 0.0f, 0.0f);
-				auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-				XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
-
-				float width = std::max(_screenWidth / camera.OrthoZoom, 1.0f);
-				float height = std::max(_screenHeight / camera.OrthoZoom, 1.0f);
-				XMMATRIX projMatrix = XMMatrixOrthographicLH(width, height, 0.0f, 100.0f);
-
-				finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
-			}
-			else
-			{
-				auto vectEye = tf.Pos.ToXMVector();
-				auto vectUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-				XMVECTOR vectAt = (tf.GetForward() + tf.Pos).ToXMVector();
-
-				XMMATRIX viewMatrix = XMMatrixLookAtLH(vectEye, vectAt, vectUp);
-
-				XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(
-					camera.PerspectiveAngle,
-					static_cast<float>(_screenWidth) / static_cast<float>(_screenHeight),
-					0.01f,
-					1000.0f
-				);
-
-				finalMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
-			}
-
-			_context->UpdateSubresource(
-				camera.ViewAndProjConstantBuffer.Get(),
-				0,
-				nullptr,
-				&finalMatrix,
-				0,
-				0);
-
+			UpdateCameraConstantBuffer(tf, camera);
 			camera.ResetIsChanged();
 		}
 
 		_context->VSSetConstantBuffers(0, 1, camera.ViewAndProjConstantBuffer.GetAddressOf());
+		_context->PSSetConstantBuffers(0, 1, camera.ViewAndProjConstantBuffer.GetAddressOf());
 	}
+}
+
+void RenderCameraDrawer::CreateCameraConstantBuffer(RenderCameraComp& camera)
+{
+	D3D11_BUFFER_DESC constantBufferDesc = {};
+	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	constantBufferDesc.ByteWidth = sizeof(CameraConstantBufferData);
+	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constantBufferDesc.CPUAccessFlags = 0;
+
+	HRESULT result = _device->CreateBuffer(
+		&constantBufferDesc,
+		nullptr,
+		camera.ViewAndProjConstantBuffer.GetAddressOf());
+	if (FAILED(result))
+		throw std::exception("failed to create camera constant buffer");
+}
+
+void RenderCameraDrawer::UpdateCameraConstantBuffer(const TransformComp& tf, RenderCameraComp& camera)
+{
+	XMVECTOR vEye = tf.Pos;
+	auto vUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX cameraMatrix;
+	if (camera.IsOrthographic)
+	{
+		auto vAt = XMVectorSet(tf.Pos.X, tf.Pos.Y, 0.0f, 0.0f);
+		XMMATRIX viewMatrix = XMMatrixLookAtLH(vEye, vAt, vUp);
+
+		float width = std::max(_screenWidth / camera.OrthoZoom, 1.0f);
+		float height = std::max(_screenHeight / camera.OrthoZoom, 1.0f);
+		XMMATRIX projMatrix = XMMatrixOrthographicLH(width, height, 0.0f, 100.0f);
+
+		cameraMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+	}
+	else
+	{
+		XMVECTOR vAt = tf.GetForward() + tf.Pos;
+
+		XMMATRIX viewMatrix = XMMatrixLookAtLH(vEye, vAt, vUp);
+
+		XMMATRIX projMatrix = XMMatrixPerspectiveFovLH(
+			camera.PerspectiveAngle,
+			static_cast<float>(_screenWidth) / static_cast<float>(_screenHeight),
+			0.01f,
+			1000.0f
+		);
+
+		cameraMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+	}
+
+	CameraConstantBufferData data =
+	{
+		cameraMatrix,
+		tf.Pos
+	};
+
+	_context->UpdateSubresource(
+		camera.ViewAndProjConstantBuffer.Get(),
+		0,
+		nullptr,
+		&data,
+		0,
+		0);
 }

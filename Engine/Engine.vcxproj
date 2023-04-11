@@ -166,6 +166,7 @@
     <ClInclude Include="entt.hpp" />
     <ClInclude Include="ArrayResize.h" />
     <ClInclude Include="GeometryRenderBuilder.h" />
+    <ClInclude Include="Hasher.h" />
     <ClInclude Include="PhysicsModule.h" />
     <ClInclude Include="RenderCameraDrawer.h" />
     <ClInclude Include="RenderImporter.h" />
@@ -187,7 +188,7 @@
     <ClInclude Include="BlahEngine.h" />
     <ClInclude Include="RenderCameraComp.h" />
     <ClInclude Include="RenderComp.h" />
-    <ClInclude Include="RenderDrawer.h" />
+    <ClInclude Include="RenderObjectDrawer.h" />
     <ClInclude Include="RenderModule.h" />
     <ClInclude Include="RenderBackground.h" />
     <ClInclude Include="RenderShader.h" />
@@ -221,7 +222,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RenderDrawer.cpp" />
+    <ClCompile Include="RenderObjectDrawer.cpp" />
     <ClCompile Include="RenderModule.cpp" />
     <ClCompile Include="RenderBackground.cpp" />
     <ClCompile Include="RenderShader.cpp" />

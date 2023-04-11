@@ -1,4 +1,5 @@
 #pragma once
+#include "Hasher.h"
 
 namespace BlahEngine
 {
@@ -19,8 +20,6 @@ public:
 
 	~Vector3();
 
-	DirectX::XMVECTOR ToXMVector() const;
-	DirectX::XMFLOAT4 ToXMFloat4() const;
 
 	float Length() const;
 
@@ -28,6 +27,12 @@ public:
 
 	Vector3 Rotate(float roll, float pitch, float yaw) const;
 	Vector3 Rotate(const DirectX::XMVECTOR& quaternion) const;
+
+
+	operator DirectX::XMFLOAT3() const;
+	operator DirectX::XMFLOAT4() const;
+	operator DirectX::XMVECTOR() const;
+
 
 	Vector3& operator=(const Vector3& other);
 	Vector3& operator=(Vector3&& other) noexcept;
@@ -67,9 +72,13 @@ struct std::hash<BlahEngine::Vector3>
 {
 	std::size_t operator()(const BlahEngine::Vector3& v) const noexcept
 	{
-		std::size_t h1 = std::hash<float>{}(v.X);
-		std::size_t h2 = std::hash<float>{}(v.Y);
-		std::size_t h3 = std::hash<float>{}(v.Z);
-		return (h1 ^ (h2 << 1) >> 1) ^ (h3 << 1);
+		//std::size_t h1 = std::hash<float>{}(v.X);
+		//std::size_t h2 = std::hash<float>{}(v.Y);
+		//std::size_t h3 = std::hash<float>{}(v.Z);
+		//return ((h1 ^ (h2 << 1)) >> 1) ^ (h3 << 1);
+
+		std::size_t h = 0;
+		BlahEngine::HashCombine(h, v.X, v.Y, v.Z);
+		return h;
 	}
 };

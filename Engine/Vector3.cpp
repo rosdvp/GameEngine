@@ -26,15 +26,6 @@ Vector3::Vector3(Vector3&& other) noexcept:
 
 Vector3::~Vector3() {}
 
-XMVECTOR Vector3::ToXMVector() const
-{
-	return { X, Y, Z };
-}
-
-XMFLOAT4 Vector3::ToXMFloat4() const
-{
-	return { X, Y, Z, 0};
-}
 
 float Vector3::Length() const
 {
@@ -60,7 +51,7 @@ Vector3 Vector3::Rotate(float roll, float pitch, float yaw) const
 
 Vector3 Vector3::Rotate(const XMVECTOR& quaternion) const
 {
-	auto v = ToXMVector();
+	XMVECTOR v = *this;
 	auto inv = XMQuaternionInverse(quaternion);
 	v = XMQuaternionMultiply(quaternion, v);
 	v = XMQuaternionMultiply(v, inv);
@@ -69,6 +60,20 @@ Vector3 Vector3::Rotate(const XMVECTOR& quaternion) const
 	//does not work!
 	//auto v = XMVector3Rotate({X, Y, Z}, quaternion);
 	//return { v.m128_f32[0], v.m128_f32[1], v.m128_f32[2] };
+}
+
+Vector3::operator XMFLOAT3() const
+{
+	return { X, Y, Z };
+}
+
+Vector3::operator XMFLOAT4() const
+{
+	return { X, Y, Z, 0 };
+}
+Vector3::operator XMVECTOR() const
+{
+	return { X, Y, Z };
 }
 
 Vector3& Vector3::operator=(const Vector3& other)

@@ -21,7 +21,7 @@ void RenderLightDrawer::Init(entt::registry* ecs, ID3D11Device* device, ID3D11De
 
 	D3D11_BUFFER_DESC constantBufferDesc = {};
 	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	constantBufferDesc.ByteWidth = sizeof(LightBufferData);
+	constantBufferDesc.ByteWidth = sizeof(LightConstantBufferData);
 	constantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	constantBufferDesc.CPUAccessFlags = 0;
 
@@ -43,34 +43,26 @@ void RenderLightDrawer::Draw()
 		auto& tf = view.get<const TransformComp>(ent);
 		auto& light = view.get<RenderLightComp>(ent);
 
-		bool shouldUpdateBuffer = false;
-
-		if (light.IsDirty)
+		if (tf.IsPosOrRotOrScaleChanged() || light.IsChanged())
 		{
-			light.IsDirty = false;
+			LightConstantBufferData data =
+			{
+				light.AmbientIntensity,
+				tf.GetForward(),
+				light.Color
+			};
 
-			_lightBufferData.LightColor = light.Color;
-
-			shouldUpdateBuffer = true;
-		}
-		if (tf.IsPosOrRotOrScaleChanged())
-		{
-			_lightBufferData.LightDir = tf.GetForward().ToXMFloat4();
-
-			shouldUpdateBuffer = true;
-		}
-
-		if (shouldUpdateBuffer)
-		{
 			_context->UpdateSubresource(
 				_lightConstantBuffer.Get(),
 				0,
 				nullptr,
-				&_lightBufferData,
+				&data,
 				0,
 				0);
+
+			light.ResetIsChanged();
 		}
 
-		_context->PSSetConstantBuffers(2, 1, _lightConstantBuffer.GetAddressOf());
+		_context->PSSetConstantBuffers(3, 1, _lightConstantBuffer.GetAddressOf());
 	}
 }

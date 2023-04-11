@@ -10,6 +10,8 @@ cbuffer TransformBuffer : register(b1)
 
 cbuffer LightBuffer : register(b2)
 {
+    float4 LightAmbient;
+
     float4 LightDir;
     float4 LightColor;
 }

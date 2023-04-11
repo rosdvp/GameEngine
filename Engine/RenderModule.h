@@ -4,11 +4,11 @@
 #include "RenderCameraDrawer.h"
 #include "RenderImporter.h"
 #include "RenderLightDrawer.h"
+#include "RenderObjectDrawer.h"
 
 
 namespace BlahEngine
 {
-class RenderDrawer;
 class TimeModule;
 class RenderShader;
 class RenderBackground;
@@ -63,14 +63,14 @@ private:
 	ComPtr<ID3D11DepthStencilView> _depthStencilView;
 	ComPtr<ID3D11RasterizerState> _rasterizerState;
 	
-	std::unique_ptr<RenderBackground> _renderBackgroundDefault;
-	std::unique_ptr<RenderBackground> _renderBackgroundCustom;
+	std::unique_ptr<RenderBackground> _backgroundDefault;
+	std::unique_ptr<RenderBackground> _backgroundCustom;
 
-	std::vector<std::unique_ptr<RenderShader>> _renderShaders;
-	std::vector<std::unique_ptr<RenderDrawer>> _renderDrawers;
+	std::vector<std::unique_ptr<RenderShader>> _shaders;
 
 	RenderCameraDrawer _cameraDrawer;
 	RenderLightDrawer _lightDrawer;
+	RenderObjectDrawer _objectDrawer;
 
 public:
 	enum EShaderId

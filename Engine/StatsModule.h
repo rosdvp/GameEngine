@@ -10,6 +10,7 @@ class IStatsModule
 public:
 	virtual void ShowDisplay(const Vector3& pos) = 0;
 	virtual void HideDisplay() = 0;
+	virtual void OutputStats() = 0;
 };
 
 class StatsModule : public virtual IStatsModule
@@ -31,6 +32,8 @@ public:
 
 	void ShowDisplay(const Vector3& pos) override;
 	void HideDisplay() override;
+
+	void OutputStats() override;
 
 private:
 	entt::registry* _ecs;

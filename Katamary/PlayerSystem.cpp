@@ -18,7 +18,8 @@ void PlayerSystem::Init()
 
 	auto& render = _ecs->emplace<RenderComp>(_entPlayer);
 	render.ShaderId = RenderModule::EShaderId::SimpleLit;
-	render.DrawerId = 0;
+	render.Mat = {0.5f, 0.1f, 0.5f, 30};
+	//render.Mat = { 0.2775f, 0.23125f, 0.773911f, 89.6 };
 
 	GeometryRenderBuilder::BuildSphere(render, 10, Color::Pink());
 	for (int i = 0; i < render.VerticesCount; i += 5)
