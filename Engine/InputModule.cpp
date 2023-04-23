@@ -12,7 +12,7 @@ InputModule::InputModule() :
 	_mousePrevX(0),
 	_mousePrevY(0),
 	_isMouseWheelChanged(0),
-	_mouseWheel(0) {}
+	_mouseWheelDelta(0) {}
 
 InputModule::~InputModule()
 {
@@ -76,7 +76,10 @@ int InputModule::GetMouseDeltaY() const
 	return _mouseY - _mousePrevY;
 }
 
-
+int InputModule::GetMouseWheelDelta() const
+{
+	return _isMouseWheelChanged ? _mouseWheelDelta : 0;
+}
 
 
 void InputModule::AddEvent(const UINT& msg, WPARAM wParam, LPARAM lParam)
@@ -84,6 +87,13 @@ void InputModule::AddEvent(const UINT& msg, WPARAM wParam, LPARAM lParam)
 	EKeyCode key;
 	bool isDown;
 	wchar_t buffer[1]{ ' ' };
+
+	if (msg == WM_MOUSEWHEEL)
+	{
+		_isMouseWheelChanged = true;
+		_mouseWheelDelta = GET_WHEEL_DELTA_WPARAM(wParam) / WHEEL_DELTA;
+		return;
+	}
 
 	DecodeKey(msg, wParam, key, isDown);
 

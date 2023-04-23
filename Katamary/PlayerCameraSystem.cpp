@@ -20,12 +20,7 @@ void PlayerCameraSystem::Run()
 	{
         auto view = _ecs->view<const PlayerComp>();
         if (!view.empty())
-        {
-            _entPlayer = view.front();
-            auto& cameraTf = _ecs->get<TransformComp>(_entCamera);
-            auto& playerTf = _ecs->get<TransformComp>(_entPlayer);
-            cameraTf.Pos = playerTf.Pos + Vector3{0, POS_OFFSET_Y, -DIST_TO_PLAYER};
-        }
+	        _entPlayer = view.front();
         return;
 	}
     float deltaTime = _engine->Time().GetFrameDeltaSecs();
@@ -33,23 +28,49 @@ void PlayerCameraSystem::Run()
     auto& cameraTf = _ecs->get<TransformComp>(_entCamera);
     auto& playerTf = _ecs->get<TransformComp>(_entPlayer);
 
-    auto yaw = _engine->Input().GetMouseDeltaX() * SENSITIVITY * deltaTime;
-    auto pitch = _engine->Input().GetMouseDeltaY() * SENSITIVITY * deltaTime;
+    float deltaYaw = _engine->Input().GetMouseDeltaX() * SENSITIVITY_ROTATE * deltaTime;
+    float deltaPitch = -_engine->Input().GetMouseDeltaY() * SENSITIVITY_ROTATE * deltaTime;
+    deltaPitch = ClampPitchDelta(cameraTf.Rot.GetPitch(), deltaPitch);
+    //return;
 
-    if (pitch + cameraTf.Rot.GetPitch() > 0)
-        pitch = -cameraTf.Rot.GetPitch();
-    if (pitch + cameraTf.Rot.GetPitch() < -85)
-        pitch = -85 - cameraTf.Rot.GetPitch();
+    cameraTf.Rot.AddAroundLocal(0, deltaPitch, 0);
+    cameraTf.Rot.AddAroundWorld(0, 0, deltaYaw);
 
-	cameraTf.Rot.AddLocal(0, pitch, 0);
-    cameraTf.Rot.AddGlobal(0, 0, -yaw);
+    float deltaZoom = _engine->Input().GetMouseWheelDelta() * SENSITIVITY_ZOOM * deltaTime;
+    _distToPlayer -= deltaZoom;
 
-    if (yaw != 0 || pitch != 0)
+    if (deltaYaw != 0 || deltaPitch != 0)
     {
+        //std::cout << cameraTf.Rot.GetPitch() << std::endl;
         //_engine->Stats().OutputStats();
     }
 
-    Vector3 deltaPos = { 0, 0, -DIST_TO_PLAYER };
+    Vector3 deltaPos = { 0, 0, -_distToPlayer };
     deltaPos = deltaPos.Rotate(cameraTf.Rot.GetQuaternion());
     cameraTf.Pos = playerTf.Pos + deltaPos;
+}
+
+float PlayerCameraSystem::ClampPitchDelta(float currPitch, float deltaPitch)
+{
+    float rangeAmin = -175;
+    float rangeAmax = -180 + 85;
+    float rangeBmin = 5;
+    float rangeBmax = 85;
+
+    if (currPitch >= rangeAmin - 1 && currPitch <= rangeAmax + 1)
+    {
+        if (currPitch + deltaPitch < rangeAmin)
+            deltaPitch = rangeAmin - currPitch;
+        if (currPitch + deltaPitch > rangeAmax)
+            deltaPitch = rangeAmax - currPitch;
+    }
+    if (currPitch >= rangeBmin - 1 && currPitch <= rangeBmax + 1)
+    {
+        if (currPitch + deltaPitch < rangeBmin)
+            deltaPitch = rangeBmin - currPitch;
+        if (currPitch + deltaPitch > rangeBmax)
+            deltaPitch = rangeBmax - currPitch;
+    }
+
+    return deltaPitch;
 }

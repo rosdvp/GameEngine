@@ -10,6 +10,8 @@ public:
 
 	float AmbientIntensity = 0;
 
+	DirectX::XMMATRIX ViewProjMatrixForShadowMap;
+
 	bool IsChanged() const
 	{
 		return _lastHash != GetHash();

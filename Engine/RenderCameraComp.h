@@ -12,7 +12,6 @@ struct RenderCameraComp
 	float OrthoZoom = 1.0f;
 	float PerspectiveAngle = 1.0f;
 	
-	ComPtr<ID3D11Buffer> ViewAndProjConstantBuffer;
 
 	bool IsChanged() const
 	{

@@ -15,14 +15,17 @@ protected:
 	ComPtr<ID3D11InputLayout> _inputLayout;
 	ComPtr<ID3D11VertexShader> _vertexShader;
 	ComPtr<ID3D11PixelShader> _pixelShader;
-	ComPtr<ID3D11SamplerState> _sampler;
+
+	ComPtr<ID3D11SamplerState> _mainTexSampler;
+	ComPtr<ID3D11SamplerState> _shadowMapSampler;
 
 	void CreateVertexShader(const WCHAR* fileName, LPCSTR entryPoint, LPCSTR shaderModel,
 	                        ID3D11Device* device, D3D11_INPUT_ELEMENT_DESC* layoutDesc, int layoutDescNum);
 
 	void CreatePixelShader(const WCHAR* fileName, LPCSTR entryPoint, LPCSTR shaderModel, ID3D11Device* device);
 
-	void CreateSampler(ID3D11Device* device);
+	void CreateMainTexSampler(ID3D11Device* device);
+	void CreateShadowMapSampler(ID3D11Device* device);
 
 private:
 	void CompileShader(const WCHAR* fileName, LPCSTR entryPoint, LPCSTR shaderModel, ID3DBlob** outBlob);

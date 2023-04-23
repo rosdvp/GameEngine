@@ -26,6 +26,7 @@ public:
 	bool IsMouseMoved() const;
 	int GetMouseDeltaX() const;
 	int GetMouseDeltaY() const;
+	int GetMouseWheelDelta() const;
 
 private:
 	RECT _winRect;
@@ -36,7 +37,7 @@ private:
 	int _mousePrevY;
 
 	int _isMouseWheelChanged;
-	int _mouseWheel;
+	int _mouseWheelDelta;
 
 	std::unique_ptr<bool[]> _keysDownMap;
 	std::unique_ptr<bool[]> _keysPressedMap;

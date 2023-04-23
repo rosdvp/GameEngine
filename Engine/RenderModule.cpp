@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "RenderModule.h"
 
+#include "DirectXColors.h"
+
 #include "Logger.h"
 #include "RenderBackground.h"
 #include "RenderComp.h"
@@ -171,12 +173,24 @@ void RenderModule::Init(entt::registry* ecs, const TimeModule* timeModule,
 
 	Logger::Debug("render module", "rasterizer state is created");
 
+
+	//--------------------------------------------------
+	//create viewport of rendering
+	_viewport = {};
+	_viewport.Width = static_cast<float>(_screenWidth);
+	_viewport.Height = static_cast<float>(_screenHeight);
+	_viewport.MinDepth = 0.0f;
+	_viewport.MaxDepth = 1.0f;
+	_viewport.TopLeftX = 0;
+	_viewport.TopLeftY = 0;
+
 	//--------------------------------------------------
 
 	for (auto& s : _shaders)
 		s->Init(_device.Get());
 	
 	_cameraDrawer.Init(ecs, _device.Get(), _context.Get(), screenWidth, screenHeight);
+	_shadowsDrawer.Init(ecs, _device.Get(), _context.Get());
 	_lightDrawer.Init(ecs, _device.Get(), _context.Get());
 	_objectDrawer.Init(_device.Get(), _context.Get());
 
@@ -185,6 +199,75 @@ void RenderModule::Init(entt::registry* ecs, const TimeModule* timeModule,
 	_isInited = true;
 	Logger::Debug("render module", "initialized");
 }
+
+
+void RenderModule::BeginFrame()
+{
+	_cameraDrawer.BeginFrame();
+	_shadowsDrawer.BeginFrame();
+	_lightDrawer.BeginFrame();
+
+	auto view = _ecs->view<const TransformComp, RenderComp>();
+	for (auto ent : view)
+	{
+		auto [tf, render] = view.get(ent);
+		_objectDrawer.BeginFrame(tf, render);
+	}
+}
+
+void RenderModule::DrawFrame()
+{
+#if _DEBUG
+	_shadowsDrawer.DrawFrame(_debugIsShadowCasterView ? _renderTargetView.Get() : nullptr);
+	if (_debugIsShadowCasterView)
+		return;
+#else
+	_shadowsDrawer.DrawFrame(nullptr);
+#endif
+
+	_context->ClearState();
+	_context->OMSetRenderTargets(
+		1,
+		_renderTargetView.GetAddressOf(),
+		_depthStencilView.Get()
+	);
+	_context->RSSetState(_rasterizerState.Get());
+	_context->RSSetViewports(1, &_viewport);
+
+	_context->ClearRenderTargetView(_renderTargetView.Get(), Colors::Black);
+	_context->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+	_cameraDrawer.DrawFrame();
+	_lightDrawer.DrawFrame();
+	_shadowsDrawer.ApplyShadowMapToContext();
+
+	auto view = _ecs->view<RenderComp>();
+	for (auto ent : view)
+	{
+		auto [render] = view.get(ent);
+
+		_shaders[render.ShaderId]->ApplyToContext(_context.Get());
+		_objectDrawer.DrawFrame(render);
+	}
+
+	//(_backgroundCustom != nullptr
+	//	? _backgroundCustom
+	//	: _backgroundDefault)
+	//	->DrawFrame(_context.Get(), _renderTargetView.Get());
+}
+
+void RenderModule::EndFrame()
+{
+	_context->OMSetRenderTargets(0, nullptr, nullptr);
+	_swapChain->Present(1, 0);
+}
+
+#if _DEBUG
+void RenderModule::DebugSetShadowCasterView(bool isOn)
+{
+	_debugIsShadowCasterView = isOn;
+}
+#endif
 
 IDXGISwapChain* RenderModule::GetSwapChain() const
 {
@@ -218,54 +301,4 @@ void RenderModule::ImportModel(std::string fileName, float scaleFactor, RenderCo
 void RenderModule::ImportTexture(std::wstring fileName, RenderComp& render)
 {
 	_importer.ImportTexture(_device.Get(), fileName, render);
-}
-
-
-void RenderModule::BeginDrawFrame()
-{
-	_context->ClearState();
-
-	D3D11_VIEWPORT viewport;
-	viewport.Width = static_cast<float>(_screenWidth);
-	viewport.Height = static_cast<float>(_screenHeight);
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	_context->RSSetViewports(1, &viewport);
-
-	_context->OMSetRenderTargets(
-		1,
-		_renderTargetView.GetAddressOf(),
-		_depthStencilView.Get()
-	);
-	_context->RSSetState(_rasterizerState.Get());
-
-	_context->ClearDepthStencilView(_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-}
-
-void RenderModule::DrawFrame()
-{
-	(_backgroundCustom != nullptr
-		? _backgroundCustom
-		: _backgroundDefault)
-		->DrawFrame(_context.Get(), _renderTargetView.Get());
-
-	_cameraDrawer.Draw();
-	_lightDrawer.Draw();
-	
-	auto view = _ecs->view<const TransformComp, RenderComp>();
-	for (auto ent : view)
-	{
-		auto [tf, render] = view.get<const TransformComp, RenderComp>(ent);
-
-		_shaders[render.ShaderId]->ApplyToContext(_context.Get());
-		_objectDrawer.Draw(tf, render);
-	}
-}
-
-void RenderModule::EndDrawFrame()
-{
-	_context->OMSetRenderTargets(0, nullptr, nullptr);
-	_swapChain->Present(1, 0);
 }

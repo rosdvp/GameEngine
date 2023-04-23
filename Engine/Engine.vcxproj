@@ -165,6 +165,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="entt.hpp" />
     <ClInclude Include="ArrayResize.h" />
+    <ClInclude Include="ERenderSlot.h" />
     <ClInclude Include="GeometryRenderBuilder.h" />
     <ClInclude Include="Hasher.h" />
     <ClInclude Include="PhysicsModule.h" />
@@ -173,9 +174,11 @@
     <ClInclude Include="RenderLightComp.h" />
     <ClInclude Include="RenderLightDrawer.h" />
     <ClInclude Include="RenderShaderLit.h" />
+    <ClInclude Include="RenderShaderShadowMap.h" />
     <ClInclude Include="RenderShaderSimpleUnlit.h" />
     <ClInclude Include="RenderShaderSimpleLit.h" />
     <ClInclude Include="RenderShaderUnlit.h" />
+    <ClInclude Include="RenderShadowsDrawer.h" />
     <ClInclude Include="Rotation.h" />
     <ClInclude Include="SystemsModule.h" />
     <ClInclude Include="Engine.h" />
@@ -208,9 +211,11 @@
     <ClCompile Include="RenderImporter.cpp" />
     <ClCompile Include="RenderLightDrawer.cpp" />
     <ClCompile Include="RenderShaderLit.cpp" />
+    <ClCompile Include="RenderShaderShadowMap.cpp" />
     <ClCompile Include="RenderShaderSimpleUnlit.cpp" />
     <ClCompile Include="RenderShaderSimpleLit.cpp" />
     <ClCompile Include="RenderShaderUnlit.cpp" />
+    <ClCompile Include="RenderShadowsDrawer.cpp" />
     <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="SystemsModule.cpp" />
     <ClCompile Include="Engine.cpp" />

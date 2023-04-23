@@ -43,7 +43,8 @@ void FreeCameraSystem::Run()
     {
         float yawDelta = _engine->Input().GetMouseDeltaX() * rotDelta;
         float pitchDelta = _engine->Input().GetMouseDeltaY() * rotDelta;
-        tf.Rot.AddLocal(0, pitchDelta, yawDelta);
+
+        tf.Rot.AddAroundLocal(0, pitchDelta, yawDelta);
     }
 
     if (_engine->Input().IsKeyPressed(KEY_C))

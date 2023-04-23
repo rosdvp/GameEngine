@@ -51,15 +51,14 @@ Vector3 Vector3::Rotate(float roll, float pitch, float yaw) const
 
 Vector3 Vector3::Rotate(const XMVECTOR& quaternion) const
 {
-	XMVECTOR v = *this;
-	auto inv = XMQuaternionInverse(quaternion);
-	v = XMQuaternionMultiply(quaternion, v);
-	v = XMQuaternionMultiply(v, inv);
-	return { v.m128_f32[0], v.m128_f32[1], v.m128_f32[2] };
-
-	//does not work!
-	//auto v = XMVector3Rotate({X, Y, Z}, quaternion);
+	//XMVECTOR v = *this;
+	//auto inv = XMQuaternionInverse(quaternion);
+	//v = XMQuaternionMultiply(quaternion, v);
+	//v = XMQuaternionMultiply(v, inv);
 	//return { v.m128_f32[0], v.m128_f32[1], v.m128_f32[2] };
+	
+	auto v = XMVector3Rotate({X, Y, Z}, quaternion);
+	return { v.m128_f32[0], v.m128_f32[1], v.m128_f32[2] };
 }
 
 Vector3::operator XMFLOAT3() const
@@ -187,5 +186,10 @@ Vector3 operator*(const Vector3& a, float k)
 Vector3 operator/(const Vector3& a, float k)
 {
 	return { a.X / k, a.Y / k, a.Z / k };
+}
+
+std::ostream& operator<<(std::ostream& os, const Vector3 v)
+{
+	return os << "(" << v.X << ", " << v.Y << ", " << v.Z << ")";
 }
 }

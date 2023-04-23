@@ -13,7 +13,7 @@ void PlayerSystem::Init()
 	_ecs->emplace<PlayerComp>(_entPlayer);
 
 	auto& tf = _ecs->emplace<TransformComp>(_entPlayer);
-	tf.Pos = { 0, 1.5f, 0 };
+	tf.Pos = { 0, 1.45f, 0 };
 	tf.Scale = { 1, 1, 1 };
 
 	auto& render = _ecs->emplace<RenderComp>(_entPlayer);
@@ -21,7 +21,7 @@ void PlayerSystem::Init()
 	render.Mat = {0.5f, 0.1f, 0.5f, 30};
 	//render.Mat = { 0.2775f, 0.23125f, 0.773911f, 89.6 };
 
-	GeometryRenderBuilder::BuildSphere(render, 10, Color::Pink());
+	GeometryRenderBuilder::BuildSphere(render, 20, Color::Pink());
 	for (int i = 0; i < render.VerticesCount; i += 5)
 		render.Vertices[i].Color = Color::Yellow();
 }
@@ -63,8 +63,6 @@ void PlayerSystem::Run()
 	playerTf.Pos += _force * deltaTime;
 
 	auto deltaRot = _force * ROT_K;
-	playerTf.Rot.AddLocal(-deltaRot.X, deltaRot.Z, 0);
-	
-	//tf.Rot.Add(-dir.X, 0, 0);
-	//tf.Rot.Add(0, dir.Z, 0);
+
+	playerTf.Rot.AddAroundWorld(-deltaRot.X, deltaRot.Z, 0);
 }

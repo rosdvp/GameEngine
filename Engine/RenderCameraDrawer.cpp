@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RenderCameraDrawer.h"
 
+#include "ERenderSlot.h"
 #include "Logger.h"
 #include "RenderCameraComp.h"
 #include "TransformComp.h"
@@ -23,36 +24,41 @@ void RenderCameraDrawer::Init(entt::registry* ecs,
 	_screenWidth = screenWidth;
 	_screenHeight = screenHeight;
 
+	CreateCameraConstantBuffer();
+
 	Logger::Debug("render module", "camera drawer is initialized");
 }
 
-void RenderCameraDrawer::Draw()
+void RenderCameraDrawer::BeginFrame()
 {
 	auto view = _ecs->view<const TransformComp, RenderCameraComp>();
 
 	for (auto entity : view)
 	{
 		auto [tf, camera] = view.get<const TransformComp, RenderCameraComp>(entity);
-
-		bool shouldUpdateBuffer = false;
-		if (camera.ViewAndProjConstantBuffer.Get() == nullptr)
-		{
-			CreateCameraConstantBuffer(camera);
-			shouldUpdateBuffer = true;
-		}
-
-		if (shouldUpdateBuffer || tf.IsPosOrRotOrScaleChanged() || camera.IsChanged())
+		
+		if (tf.IsPosOrRotOrScaleChanged() || camera.IsChanged())
 		{
 			UpdateCameraConstantBuffer(tf, camera);
 			camera.ResetIsChanged();
 		}
-
-		_context->VSSetConstantBuffers(0, 1, camera.ViewAndProjConstantBuffer.GetAddressOf());
-		_context->PSSetConstantBuffers(0, 1, camera.ViewAndProjConstantBuffer.GetAddressOf());
 	}
 }
 
-void RenderCameraDrawer::CreateCameraConstantBuffer(RenderCameraComp& camera)
+void RenderCameraDrawer::DrawFrame()
+{
+	auto view = _ecs->view<RenderCameraComp>();
+	auto ent = view.front();
+	if (ent == entt::null)
+		return;
+
+	auto [camera] = view.get(ent);
+
+	_context->VSSetConstantBuffers(SLOT_CAMERA_CONST_BUFFER, 1, _cameraConstantBuffer.GetAddressOf());
+	_context->PSSetConstantBuffers(SLOT_CAMERA_CONST_BUFFER, 1, _cameraConstantBuffer.GetAddressOf());
+}
+
+void RenderCameraDrawer::CreateCameraConstantBuffer()
 {
 	D3D11_BUFFER_DESC constantBufferDesc = {};
 	constantBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -63,17 +69,17 @@ void RenderCameraDrawer::CreateCameraConstantBuffer(RenderCameraComp& camera)
 	HRESULT result = _device->CreateBuffer(
 		&constantBufferDesc,
 		nullptr,
-		camera.ViewAndProjConstantBuffer.GetAddressOf());
+		_cameraConstantBuffer.GetAddressOf());
 	if (FAILED(result))
 		throw std::exception("failed to create camera constant buffer");
 }
 
-void RenderCameraDrawer::UpdateCameraConstantBuffer(const TransformComp& tf, RenderCameraComp& camera)
+void RenderCameraDrawer::UpdateCameraConstantBuffer(const TransformComp& tf, const RenderCameraComp& camera)
 {
 	XMVECTOR vEye = tf.Pos;
 	auto vUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	XMMATRIX cameraMatrix;
+	XMMATRIX viewProjMatrix;
 	if (camera.IsOrthographic)
 	{
 		auto vAt = XMVectorSet(tf.Pos.X, tf.Pos.Y, 0.0f, 0.0f);
@@ -83,7 +89,7 @@ void RenderCameraDrawer::UpdateCameraConstantBuffer(const TransformComp& tf, Ren
 		float height = std::max(_screenHeight / camera.OrthoZoom, 1.0f);
 		XMMATRIX projMatrix = XMMatrixOrthographicLH(width, height, 0.0f, 100.0f);
 
-		cameraMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+		viewProjMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
 	}
 	else
 	{
@@ -98,17 +104,17 @@ void RenderCameraDrawer::UpdateCameraConstantBuffer(const TransformComp& tf, Ren
 			1000.0f
 		);
 
-		cameraMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
+		viewProjMatrix = XMMatrixTranspose(viewMatrix * projMatrix);
 	}
 
 	CameraConstantBufferData data =
 	{
-		cameraMatrix,
+		viewProjMatrix,
 		tf.Pos
 	};
 
 	_context->UpdateSubresource(
-		camera.ViewAndProjConstantBuffer.Get(),
+		_cameraConstantBuffer.Get(),
 		0,
 		nullptr,
 		&data,

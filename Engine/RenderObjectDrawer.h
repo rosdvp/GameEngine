@@ -12,7 +12,9 @@ public:
 
 	void Init(ID3D11Device* device, ID3D11DeviceContext* context);
 
-	void Draw(const TransformComp& tf, RenderComp& render);
+	void BeginFrame(const TransformComp& tf, RenderComp& render);
+
+	void DrawFrame(RenderComp& render);
 private:
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _context;

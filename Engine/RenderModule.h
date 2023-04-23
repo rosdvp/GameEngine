@@ -5,6 +5,7 @@
 #include "RenderImporter.h"
 #include "RenderLightDrawer.h"
 #include "RenderObjectDrawer.h"
+#include "RenderShadowsDrawer.h"
 
 
 namespace BlahEngine
@@ -22,6 +23,10 @@ public:
 
 	virtual void ImportModel(std::string fileName, float scaleFactor, RenderComp& render) = 0;
 	virtual void ImportTexture(std::wstring fileName, RenderComp& render) = 0;
+
+#if _DEBUG
+	virtual void DebugSetShadowCasterView(bool isOn) = 0;
+#endif
 };
 
 class RenderModule : virtual public IRenderModule
@@ -41,9 +46,13 @@ public:
 	void ImportModel(std::string fileName, float scaleFactor, RenderComp& render) override;
 	void ImportTexture(std::wstring fileName, RenderComp& render) override;
 
-	void BeginDrawFrame();
+	void BeginFrame();
 	void DrawFrame();
-	void EndDrawFrame();
+	void EndFrame();
+
+#if _DEBUG
+	void DebugSetShadowCasterView(bool isOn) override;
+#endif
 
 private:
 	const TimeModule* _timeModule;
@@ -62,6 +71,7 @@ private:
 	ComPtr<ID3D11RenderTargetView> _renderTargetView;
 	ComPtr<ID3D11DepthStencilView> _depthStencilView;
 	ComPtr<ID3D11RasterizerState> _rasterizerState;
+	D3D11_VIEWPORT _viewport;
 	
 	std::unique_ptr<RenderBackground> _backgroundDefault;
 	std::unique_ptr<RenderBackground> _backgroundCustom;
@@ -69,8 +79,14 @@ private:
 	std::vector<std::unique_ptr<RenderShader>> _shaders;
 
 	RenderCameraDrawer _cameraDrawer;
+	RenderShadowsDrawer _shadowsDrawer;
 	RenderLightDrawer _lightDrawer;
 	RenderObjectDrawer _objectDrawer;
+
+
+#if _DEBUG
+	bool _debugIsShadowCasterView = false;
+#endif
 
 public:
 	enum EShaderId

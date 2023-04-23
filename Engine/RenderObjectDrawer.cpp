@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RenderObjectDrawer.h"
 
+#include "ERenderSlot.h"
 #include "Logger.h"
 #include "RenderComp.h"
 #include "TransformComp.h"
@@ -22,7 +23,7 @@ void RenderObjectDrawer::Init(ID3D11Device* device, ID3D11DeviceContext* context
 	Logger::Debug("render module", "object drawer is initialized");
 }
 
-void RenderObjectDrawer::Draw(const TransformComp& tf, RenderComp& render)
+void RenderObjectDrawer::BeginFrame(const TransformComp& tf, RenderComp& render)
 {
 	bool shouldUpdateTransform = false;
 	bool shouldUpdateMaterial = false;
@@ -37,7 +38,6 @@ void RenderObjectDrawer::Draw(const TransformComp& tf, RenderComp& render)
 		shouldUpdateTransform = true;
 		shouldUpdateMaterial = true;
 	}
-
 	if (shouldUpdateTransform || tf.IsPosOrRotOrScaleChanged())
 	{
 		UpdateTransformConstantBuffer(tf, render);
@@ -46,12 +46,21 @@ void RenderObjectDrawer::Draw(const TransformComp& tf, RenderComp& render)
 	{
 		UpdateMaterialConstantBuffer(render);
 	}
+}
 
-	_context->VSSetConstantBuffers(1, 1, render.TransformConstantBuffer.GetAddressOf());
-
-	_context->PSSetConstantBuffers(2, 1, render.MaterialConstantBuffer.GetAddressOf());
-
-	_context->PSSetShaderResources(0, 1, render.Texture.GetAddressOf());
+void RenderObjectDrawer::DrawFrame(RenderComp& render)
+{
+	_context->VSSetConstantBuffers(
+		SLOT_TRANSFORM_CONST_BUFFER,
+		1,
+		render.TransformConstantBuffer.GetAddressOf()
+	);
+	_context->PSSetConstantBuffers(
+		SLOT_MATERIAL_CONST_BUFFER,
+		1, 
+		render.MaterialConstantBuffer.GetAddressOf()
+	);
+	_context->PSSetShaderResources(SLOT_MAIN_TEX, 1, render.Texture.GetAddressOf());
 		
 	UINT stride = sizeof(RenderComp::Vertex);
 	UINT offset = 0;

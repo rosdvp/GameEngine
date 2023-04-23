@@ -1,11 +1,13 @@
 #pragma once
+#include "Vector3.h"
 
 namespace BlahEngine
 {
 	struct Rotation
 	{
-#define CONVERT_360(x) if ((x) > 0) while((x) > 360) (x) -= 360; else while((x) < -360) (x) += 360;
+#define CLIP_360(x) if ((x) > 0) while((x) > 360) (x) -= 360; else while((x) < -360) (x) += 360;
 #define DEGREE_TO_RADIAN(x) (x) * DirectX::XM_PI / 180.0f
+#define RADIAN_TO_DEGREE(x) (x) * 180.0f / DirectX::XM_PI
 
 
 	public:
@@ -24,6 +26,8 @@ namespace BlahEngine
 
 
 		DirectX::XMVECTOR GetQuaternion() const;
+		DirectX::XMVECTOR GetQuaternionInv() const;
+		Vector3 GetEuler() const;
 		float GetRoll() const;
 		float GetPitch() const;
 		float GetYaw() const;
@@ -31,19 +35,11 @@ namespace BlahEngine
 
 		void Set(float roll, float pitch, float yaw);
 
-		void AddLocal(float roll, float pitch, float yaw);
-		void AddGlobal(float roll, float pitch, float yaw);
+		void AddAroundLocal(float roll, float pitch, float yaw);
+		void AddAroundWorld(float roll, float pitch, float yaw);
 
 
-		friend std::ostream& operator<<(std::ostream& os, const Rotation& r)
-		{
-			return os << "("
-				<< r._q.m128_f32[0] << ", "
-				<< r._q.m128_f32[1] << ", "
-				<< r._q.m128_f32[2] << ", "
-				<< r._q.m128_f32[3] << ", "
-				<< ")";
-		}
+		friend std::ostream& operator<<(std::ostream& os, const Rotation& r);
 
 	private:
 		float _roll = 0;

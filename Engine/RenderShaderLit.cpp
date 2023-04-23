@@ -58,5 +58,5 @@ void RenderShaderLit::Init(ID3D11Device* device)
 		"ps_5_0",
 		device);
 
-	CreateSampler(device);
+	CreateMainTexSampler(device);
 }

@@ -67,6 +67,15 @@
     <Filter Include="Source Files\Transforms">
       <UniqueIdentifier>{d573212f-a1f9-424c-9f79-38ef66613a9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Render\Shaders">
+      <UniqueIdentifier>{91611e33-5f97-446c-a264-fa995e566d3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Shaders">
+      <UniqueIdentifier>{11b6682e-1840-4260-b12c-acfdbfe56b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render\Components">
+      <UniqueIdentifier>{2abc4bb3-ffb8-4854-87c1-5a587cee1c9e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -91,9 +100,6 @@
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="RenderBackground.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderShader.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="InputCodes.h">
@@ -138,12 +144,6 @@
     <ClInclude Include="CollisionComp.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="RenderCameraComp.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderComp.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="UiTextComp.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
@@ -156,25 +156,7 @@
     <ClInclude Include="Rotation.h">
       <Filter>Header Files\Math</Filter>
     </ClInclude>
-    <ClInclude Include="RenderShaderSimpleUnlit.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderShaderUnlit.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderShaderSimpleLit.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderCameraDrawer.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
     <ClInclude Include="RenderLightDrawer.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderLightComp.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderShaderLit.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
@@ -185,6 +167,42 @@
     </ClInclude>
     <ClInclude Include="Hasher.h">
       <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShadowsDrawer.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShader.h">
+      <Filter>Header Files\Render\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderLit.h">
+      <Filter>Header Files\Render\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderSimpleLit.h">
+      <Filter>Header Files\Render\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderSimpleUnlit.h">
+      <Filter>Header Files\Render\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderUnlit.h">
+      <Filter>Header Files\Render\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCameraComp.h">
+      <Filter>Header Files\Render\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderCameraDrawer.h">
+      <Filter>Header Files\Render\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderComp.h">
+      <Filter>Header Files\Render\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLightComp.h">
+      <Filter>Header Files\Render\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderShaderShadowMap.h">
+      <Filter>Header Files\Render\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ERenderSlot.h">
+      <Filter>Header Files\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -207,9 +225,6 @@
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="RenderBackground.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderShader.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="InputModule.cpp">
@@ -245,23 +260,32 @@
     <ClCompile Include="Rotation.cpp">
       <Filter>Source Files\Math</Filter>
     </ClCompile>
-    <ClCompile Include="RenderShaderSimpleUnlit.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderShaderUnlit.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderShaderSimpleLit.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
     <ClCompile Include="RenderCameraDrawer.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
     <ClCompile Include="RenderLightDrawer.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
+    <ClCompile Include="RenderShader.cpp">
+      <Filter>Source Files\Render\Shaders</Filter>
+    </ClCompile>
     <ClCompile Include="RenderShaderLit.cpp">
+      <Filter>Source Files\Render\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShaderSimpleLit.cpp">
+      <Filter>Source Files\Render\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShaderSimpleUnlit.cpp">
+      <Filter>Source Files\Render\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShaderUnlit.cpp">
+      <Filter>Source Files\Render\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShadowsDrawer.cpp">
       <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderShaderShadowMap.cpp">
+      <Filter>Source Files\Render\Shaders</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

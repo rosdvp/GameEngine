@@ -70,10 +70,10 @@ void Engine::Run()
 		_statsModule.EndPhysics();
 
 		_statsModule.BeginRender();
-		_renderModule.BeginDrawFrame();
+		_renderModule.BeginFrame();
 		_renderModule.DrawFrame();
 		_uiModule.DrawFrame();
-		_renderModule.EndDrawFrame();
+		_renderModule.EndFrame();
 		_statsModule.EndRender();
 
 		_transformsModule.ResetTransformsIsChanged();

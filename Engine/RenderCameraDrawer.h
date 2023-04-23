@@ -14,7 +14,9 @@ public:
 	void Init(entt::registry* ecs, ID3D11Device* device, ID3D11DeviceContext* context, int screenWidth,
 	          int screenHeight);
 
-	void Draw();
+	void BeginFrame();
+
+	void DrawFrame();
 
 private:
 	entt::registry* _ecs;
@@ -24,13 +26,14 @@ private:
 
 	ID3D11Device* _device;
 	ID3D11DeviceContext* _context;
+	ComPtr<ID3D11Buffer> _cameraConstantBuffer;
 
-	void CreateCameraConstantBuffer(RenderCameraComp& camera);
-	void UpdateCameraConstantBuffer(const TransformComp& tf, RenderCameraComp& camera);
+	void CreateCameraConstantBuffer();
+	void UpdateCameraConstantBuffer(const TransformComp& tf, const RenderCameraComp& camera);
 	
 	struct CameraConstantBufferData
 	{
-		DirectX::XMMATRIX CameraMatrix;
+		DirectX::XMMATRIX CameraViewProjMatrix;
 		DirectX::XMFLOAT3 CameraPos;
 	};
 };

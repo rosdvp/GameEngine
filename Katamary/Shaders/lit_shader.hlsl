@@ -28,7 +28,7 @@ struct VS_IN
     float2 TexCoord : TEXCOORD0;
 };
 
-struct VS_OUTPUT
+struct PS_IN
 {
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
@@ -37,9 +37,9 @@ struct VS_OUTPUT
 };
 
 
-VS_OUTPUT VS(VS_IN input)
+PS_IN VS(VS_IN input)
 {
-    VS_OUTPUT output = (VS_OUTPUT)0;
+    PS_IN output = (PS_IN)0;
     output.Pos = mul(input.Pos, WorldMatrix);
     output.Pos = mul(output.Pos, CameraMatrix);
     output.Color = input.Color;
@@ -50,7 +50,7 @@ VS_OUTPUT VS(VS_IN input)
 
 
 
-float4 PS(VS_OUTPUT input) : SV_Target
+float4 PS(PS_IN input) : SV_Target
 {
     float4 color = 0;
     

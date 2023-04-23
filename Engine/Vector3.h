@@ -57,10 +57,7 @@ public:
 	friend Vector3 operator*(const Vector3& a, float k);
 	friend Vector3 operator/(const Vector3& a, float k);
 
-	friend std::ostream& operator<<(std::ostream& os, const Vector3 v)
-	{
-		return os << "(" << v.X << ", " << v.Y << ", " << v.Z << ")";
-	}
+	friend std::ostream& operator<<(std::ostream& os, const Vector3 v);
 
 private:
 	static constexpr float EQUALITY_TOLERANCE = 0.0001f;
