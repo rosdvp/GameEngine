@@ -102,25 +102,6 @@ float GetShadowK(float4 shadowMapPos)
 
 float4 PS(PS_IN input) : SV_Target
 {
-    /*
-    //-----------SHADOWS------------
-    float4 shadowMapPos = input.ShadowMapPos;
-    shadowMapPos.xyz /= input.ShadowMapPos.w;
-
-    if (shadowMapPos.x < -1.0f || shadowMapPos.x > 1.0f ||
-        shadowMapPos.y < -1.0f || shadowMapPos.y > 1.0f ||
-        shadowMapPos.z < 0.0f  || shadowMapPos.z > 1.0f) 
-        return MatAmbient * AmbientIntensity * input.Color;
-
-    shadowMapPos.x = shadowMapPos.x / 2 + 0.5;
-    shadowMapPos.y = shadowMapPos.y / -2 + 0.5;
-
-    float shadowMapDepth = ShadowMap.Sample(ShadowMapSampler, shadowMapPos.xy).r;
-    if (shadowMapDepth < shadowMapPos.z)
-        return MatAmbient * AmbientIntensity * input.Color;
-    */
-    //------------------------------
-
     float shadowK = GetShadowK(input.ShadowMapPos);
 
     float4 color = GetPhongLightColor(input.WorldPos, (float3)input.Normal, shadowK);

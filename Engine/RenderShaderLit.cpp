@@ -59,4 +59,5 @@ void RenderShaderLit::Init(ID3D11Device* device)
 		device);
 
 	CreateMainTexSampler(device);
+	CreateShadowMapSampler(device);
 }

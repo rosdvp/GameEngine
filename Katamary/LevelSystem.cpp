@@ -15,9 +15,7 @@ void LevelSystem::Init()
 	CreateObstacle({ -5, 2.0f, -5 }, {1, 3, 1});
 	CreateObstacle({ -5, 2.5f, 5 }, {1, 4, 1});
 
-	//CreateObstacle({ 0, 1.0f, 10 }, 
-	//	"./Models/duck.obj", L"./Models/duck.dds", 
-	//	0.2f);
+	CreateDuck({ 0, 0.5f, 5 }, { 0, 90, 0 }, 0.15f);
 }
 
 void LevelSystem::CreateLight()
@@ -71,19 +69,19 @@ void LevelSystem::CreateObstacle(Vector3 pos, Vector3 scale)
 	GeometryRenderBuilder::BuildCube(render, Color::Green());
 }
 
-
-void LevelSystem::CreateObstacle(Vector3 pos, std::string pathModelFile, std::wstring pathTextureFile, float scaleFactor)
+void LevelSystem::CreateDuck(const Vector3& pos, const Rotation& rot, float scale)
 {
 	auto ent = _ecs->create();
 
 	auto& tf = _ecs->emplace<TransformComp>(ent);
 	tf.Pos = pos;
-	//tf.Scale = { 0.3f, 0.3f, 0.3f };
-	//tf.Scale = { 0.5f, 0.5f, 0.5f };
+	tf.Rot = rot;
+	tf.Scale = { scale, scale, scale };
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.ShaderId = RenderModule::EShaderId::Lit;
+	render.Mat = { 0.5f, 0.1f, 0.5f, 30 };
 
-	_engine->Render().ImportModel(pathModelFile, scaleFactor, render);
-	_engine->Render().ImportTexture(pathTextureFile, render);
+	_engine->Render().ImportModel("./Models/duck.obj", 1.0f, render);
+	_engine->Render().ImportTexture(L"./Models/duck.dds", render);
 }

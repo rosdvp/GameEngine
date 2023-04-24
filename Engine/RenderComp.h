@@ -9,7 +9,7 @@ struct RenderComp
 	struct Vertex
 	{
 		DirectX::XMFLOAT3 Pos;
-		DirectX::XMFLOAT4 Color;
+		DirectX::XMFLOAT4 Color { 1.0f, 1.0f, 1.0f, 1.0f };
 		DirectX::XMFLOAT3 Normal;
 		DirectX::XMFLOAT2 TexCoord;
 	};
