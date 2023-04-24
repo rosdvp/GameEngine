@@ -3,7 +3,7 @@
 
 #include <d3dcompiler.h>
 
-#include "ERenderSlot.h"
+#include "RenderSlotsConsts.h"
 #include "Logger.h"
 
 using namespace BlahEngine;

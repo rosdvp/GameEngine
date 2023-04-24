@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "RenderCameraDrawer.h"
 
-#include "ERenderSlot.h"
+#include "RenderSlotsConsts.h"
 #include "Logger.h"
 #include "RenderCameraComp.h"
 #include "TransformComp.h"

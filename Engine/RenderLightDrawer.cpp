@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "RenderLightDrawer.h"
 
-#include "ERenderSlot.h"
+#include "RenderSlotsConsts.h"
 #include "Logger.h"
 #include "RenderLightComp.h"
 #include "TransformComp.h"

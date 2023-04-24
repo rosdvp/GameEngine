@@ -3,6 +3,7 @@
 #include "GeometryRenderBuilder.h"
 #include "RenderComp.h"
 #include "RenderLightComp.h"
+#include "RenderMaterialsPresets.h"
 
 using namespace BlahEngine;
 
@@ -28,7 +29,7 @@ void LevelSystem::CreateLight()
 
 	auto& light = _ecs->emplace<RenderLightComp>(ent);
 	light.Color = Color::White();
-	light.AmbientIntensity = 2.0f;
+	light.AmbientIntensity = 1.0f;
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.ShaderId = RenderModule::EShaderId::SimpleUnlit;
@@ -49,7 +50,7 @@ void LevelSystem::CreateGround()
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.ShaderId = RenderModule::EShaderId::SimpleLit;
-	render.Mat = { 0.5f, 0.1f, 0.5f, 30 };
+	render.Mat = MatPresetChrome;
 	GeometryRenderBuilder::BuildCube(render, Color::Grey());
 }
 
@@ -63,7 +64,7 @@ void LevelSystem::CreateObstacle(Vector3 pos, Vector3 scale)
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.ShaderId = RenderModule::EShaderId::SimpleLit;
-	render.Mat = { 0.5f, 0.1f, 0.5f, 30 };
+	render.Mat = MatPresetChrome;
 	//render.Mat = { 0.2775f, 0.23125f, 0.773911f, 89.6 };
 
 	GeometryRenderBuilder::BuildCube(render, Color::Green());
@@ -80,7 +81,7 @@ void LevelSystem::CreateDuck(const Vector3& pos, const Rotation& rot, float scal
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.ShaderId = RenderModule::EShaderId::Lit;
-	render.Mat = { 0.5f, 0.1f, 0.5f, 30 };
+	render.Mat = MatPresetChrome;
 
 	_engine->Render().ImportModel("./Models/duck.obj", 1.0f, render);
 	_engine->Render().ImportTexture(L"./Models/duck.dds", render);

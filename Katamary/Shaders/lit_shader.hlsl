@@ -9,11 +9,11 @@ cbuffer TransformBuffer : register(b1)
     matrix ObjWorldMatrix; // 64   [0 left]
 }
 
-cbuffer MaterialBuffer : register(b2) // 16
+cbuffer MaterialBuffer : register(b2) // 52 -> 64
 {
-    float MatDiffuse;       // 4    [12 left]
-    float MatAmbient;       // 4    [8 left]
-    float MatSpecular;      // 4    [4 left]
+    float4 MatDiffuse;      // 16
+    float4 MatAmbient;      // 16
+    float4 MatSpecular;     // 16
     float MatSpecularSize;  // 4    [0 left]
 }
 

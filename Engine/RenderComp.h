@@ -13,13 +13,13 @@ struct RenderComp
 		DirectX::XMFLOAT3 Normal;
 		DirectX::XMFLOAT2 TexCoord;
 	};
-
+	
 	struct Material
 	{
-		float Diffuse;
-		float Ambient;
-		float Specular;
-		float SpecularSize;
+		alignas(16) DirectX::XMFLOAT3 Diffuse;
+		alignas(16) DirectX::XMFLOAT3 Ambient;
+		alignas(16) DirectX::XMFLOAT3 Specular;
+		alignas(16) float SpecularSize;
 	};
 
 	int ShaderId = -1;

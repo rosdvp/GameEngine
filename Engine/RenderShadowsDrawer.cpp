@@ -6,7 +6,7 @@
 #include "TransformComp.h"
 
 #include "DirectXColors.h"
-#include "ERenderSlot.h"
+#include "RenderSlotsConsts.h"
 #include "RenderComp.h"
 
 using namespace BlahEngine;

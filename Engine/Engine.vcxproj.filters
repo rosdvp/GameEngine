@@ -201,7 +201,10 @@
     <ClInclude Include="RenderShaderShadowMap.h">
       <Filter>Header Files\Render\Shaders</Filter>
     </ClInclude>
-    <ClInclude Include="ERenderSlot.h">
+    <ClInclude Include="RenderSlotsConsts.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderMaterialsPresets.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,6 +3,7 @@
 #include "GeometryRenderBuilder.h"
 #include "PlayerComp.h"
 #include "RenderComp.h"
+#include "RenderMaterialsPresets.h"
 
 using namespace BlahEngine;
 
@@ -18,7 +19,7 @@ void PlayerSystem::Init()
 
 	auto& render = _ecs->emplace<RenderComp>(_entPlayer);
 	render.ShaderId = RenderModule::EShaderId::SimpleLit;
-	render.Mat = {0.5f, 0.1f, 0.5f, 30};
+	render.Mat = MatPresetChrome;
 	//render.Mat = { 0.2775f, 0.23125f, 0.773911f, 89.6 };
 
 	GeometryRenderBuilder::BuildSphere(render, 20, Color::Pink());

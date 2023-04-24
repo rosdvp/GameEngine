@@ -165,7 +165,8 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="entt.hpp" />
     <ClInclude Include="ArrayResize.h" />
-    <ClInclude Include="ERenderSlot.h" />
+    <ClInclude Include="RenderMaterialsPresets.h" />
+    <ClInclude Include="RenderSlotsConsts.h" />
     <ClInclude Include="GeometryRenderBuilder.h" />
     <ClInclude Include="Hasher.h" />
     <ClInclude Include="PhysicsModule.h" />
