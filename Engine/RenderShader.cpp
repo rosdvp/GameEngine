@@ -13,7 +13,8 @@ void RenderShader::ApplyToContext(ID3D11DeviceContext* context)
 {
 	context->IASetInputLayout(_inputLayout.Get());
 	context->VSSetShader(_vertexShader.Get(), nullptr, 0);
-	context->PSSetShader(_pixelShader.Get(), nullptr, 0);
+	if (_pixelShader.Get() != nullptr)
+		context->PSSetShader(_pixelShader.Get(), nullptr, 0);
 
 	if (_mainTexSampler.Get() != nullptr)
 		context->PSSetSamplers(SLOT_MAIN_TEX_SAMPLER, 1, _mainTexSampler.GetAddressOf());

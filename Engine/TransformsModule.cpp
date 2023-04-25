@@ -43,8 +43,6 @@ void TransformsModule::AdjustGlobalPositions()
 				
 				tf.Pos = (tf.Pos - parentTf.GlobalPos).Rotate(-parentTf.Rot);
 				tf.Rot = -parentTf.Rot;
-
-				//tf.Pos -= parentTf.GlobalPos;
 			}
 
 			tf.PrevParent = tf.Parent;

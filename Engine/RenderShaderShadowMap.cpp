@@ -26,10 +26,10 @@ void RenderShaderShadowMap::Init(ID3D11Device* device)
 		layoutDesc,
 		sizeof(layoutDesc) / sizeof(D3D11_INPUT_ELEMENT_DESC)
 	);
-	CreatePixelShader(
-		L"./Shaders/shadow_map_shader.hlsl",
-		"PS",
-		"ps_5_0",
-		device
-	);
+	//CreatePixelShader(
+	//	L"./Shaders/shadow_map_shader.hlsl",
+	//	"PS",
+	//	"ps_5_0",
+	//	device
+	//);
 }

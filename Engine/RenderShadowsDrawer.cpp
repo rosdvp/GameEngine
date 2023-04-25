@@ -72,8 +72,8 @@ void RenderShadowsDrawer::BeginFrame()
 
 		XMMATRIX viewMatrix = XMMatrixLookAtLH(vEye, vAt, vUp);
 		XMMATRIX projMatrix = XMMatrixOrthographicLH(
-			SHADOWMAP_WIDTH * 0.01f,
-			SHADOWMAP_HEIGHT * 0.01f,
+			AREA_SIZE,
+			AREA_SIZE,
 			0.0f,
 			100.0f
 		);

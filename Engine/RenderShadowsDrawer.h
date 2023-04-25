@@ -20,6 +20,7 @@ class RenderShadowsDrawer
 		void ApplyShadowMapToContext();
 
 	private:
+		static constexpr UINT AREA_SIZE = 50;
 		static constexpr UINT SHADOWMAP_WIDTH = 4096;
 		static constexpr UINT SHADOWMAP_HEIGHT = 4096;
 
