@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Vector3.h"
 
+#include "Rotation.h"
+
 using namespace BlahEngine;
 using namespace DirectX;
 
@@ -27,7 +29,7 @@ Vector3::Vector3(Vector3&& other) noexcept:
 Vector3::~Vector3() {}
 
 
-float Vector3::Length() const
+float Vector3::GetLength() const
 {
 	if (X == 0 && Y == 0 && Z == 0)
 		return 0;
@@ -36,7 +38,7 @@ float Vector3::Length() const
 
 Vector3 Vector3::GetNorm() const
 {
-	float length = Length();
+	float length = GetLength();
 	if (length == 0)
 		return { 0, 0, 0 };
 	return { X / length, Y / length, Z / length };
@@ -49,6 +51,11 @@ Vector3 Vector3::Rotate(float roll, float pitch, float yaw) const
 }
 
 
+Vector3 Vector3::Rotate(const Rotation& rot) const
+{
+	return Rotate(rot.GetQuaternion());
+}
+
 Vector3 Vector3::Rotate(const XMVECTOR& quaternion) const
 {
 	//XMVECTOR v = *this;
@@ -59,6 +66,11 @@ Vector3 Vector3::Rotate(const XMVECTOR& quaternion) const
 	
 	auto v = XMVector3Rotate({X, Y, Z}, quaternion);
 	return { v.m128_f32[0], v.m128_f32[1], v.m128_f32[2] };
+}
+
+float Vector3::GetMaxAxisValue() const
+{
+	return std::max(std::max(X, Y), Z);
 }
 
 Vector3::operator XMFLOAT3() const

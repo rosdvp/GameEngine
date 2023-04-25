@@ -2,17 +2,19 @@
 
 #include "BlahEngine.h"
 
-class LevelSystem : public BlahEngine::IInitSystem
+class LevelSystem : public BlahEngine::IInitSystem, BlahEngine::IRunSystem
 {
 public:
 	void Init() override;
 
+	void Run() override;
+
 private:
-	void CreateLight();
+	entt::entity _entDebugBox {entt::null};
 
 	void CreateGround();
 
-	void CreateObstacle(BlahEngine::Vector3 pos, BlahEngine::Vector3 scale);
+	entt::entity CreateObstacle(BlahEngine::Vector3 pos, BlahEngine::Vector3 scale);
 
 	void CreateDuck(const BlahEngine::Vector3& pos, const BlahEngine::Rotation& rot, float scale);
 };

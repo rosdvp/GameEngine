@@ -24,11 +24,21 @@ void PhysicsModule::RunCollisions()
 {
 	auto view = _ecs->view<TransformComp, CollisionComp>();
 
-	view.each([](TransformComp& tf, CollisionComp& col)
+	view.each([](const TransformComp& tf, CollisionComp& col)
 		{
 			col.Collided.clear();
-			col.Box.Center = { tf.Pos.X, tf.Pos.Y, tf.Pos.Z };
-			col.Box.Extents = { tf.Scale.X * col.Size.X, tf.Scale.Y * col.Size.Y, tf.Scale.Z * col.Size.Z};
+
+			if (col.Type == CollisionComp::BoxCollision)
+			{
+				col.Box.Center = tf.GlobalPos;
+				col.Box.Extents = tf.Scale * col.Size / 2.0f;
+				col.Box.Orientation = tf.GlobalRot.GetQuaternionFloat4();
+			}
+			else if (col.Type == CollisionComp::SphereCollision)
+			{
+				col.Sphere.Center = tf.GlobalPos;
+				col.Sphere.Radius = tf.Scale.GetMaxAxisValue() * col.Size.GetMaxAxisValue() / 2.0f;
+			}
 		});
 
 	for (auto entA : view)
@@ -37,13 +47,24 @@ void PhysicsModule::RunCollisions()
 
 		for (auto entB : view)
 		{
-			if (entA <= entB) //escape double check
+			if (entA <= entB) //avoid double check
 				continue;
 
 			auto [tfB, colB] = _ecs->get<TransformComp, CollisionComp>(entB);
-			if (colA.Box.Intersects(colB.Box))
+
+			bool isIntersects =
+				colA.Type == CollisionComp::BoxCollision && colB.Type == CollisionComp::BoxCollision
+				? colA.Box.Intersects(colB.Box)
+				: colA.Type == CollisionComp::BoxCollision && colB.Type == CollisionComp::SphereCollision
+				? colA.Box.Intersects(colB.Sphere)
+				: colA.Type == CollisionComp::SphereCollision && colB.Type == CollisionComp::BoxCollision
+				? colA.Sphere.Intersects(colB.Box)
+				: colA.Type == CollisionComp::SphereCollision && colB.Type == CollisionComp::SphereCollision
+				? colA.Sphere.Intersects(colB.Sphere)
+				: false;
+
+			if (isIntersects)
 			{
-				std::cout << "collided" << std::endl;
 				colA.Collided.push_back(entB);
 				colB.Collided.push_back(entA);
 

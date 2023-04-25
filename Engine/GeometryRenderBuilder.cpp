@@ -112,7 +112,13 @@ void GeometryRenderBuilder::BuildSphere(RenderComp& render, size_t tessellation,
 			dx *= dxz;
 			dz *= dxz;
 
-			vertices.push_back({ {dx, dy, dz}, color, {dx, dy, dz}});
+			XMFLOAT3 pos = { dx / 2, dy / 2, dz / 2 };
+			XMVECTOR rawNormal = { dx, dy, dz };
+			rawNormal = XMVector3Normalize(rawNormal);
+			XMFLOAT3 normal;
+			XMStoreFloat3(&normal, rawNormal);
+
+			vertices.push_back({ pos, color, normal});
 		}
 	}
 

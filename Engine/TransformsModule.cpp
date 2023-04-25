@@ -37,6 +37,16 @@ void TransformsModule::AdjustGlobalPositions()
 		auto& tf = _ecs->get<TransformComp>(ent);
 		if (tf.Parent != tf.PrevParent)
 		{
+			if (tf.Parent != entt::null)
+			{
+				auto& parentTf = _ecs->get<const TransformComp>(tf.Parent);
+				
+				tf.Pos = (tf.Pos - parentTf.GlobalPos).Rotate(-parentTf.Rot);
+				tf.Rot = -parentTf.Rot;
+
+				//tf.Pos -= parentTf.GlobalPos;
+			}
+
 			tf.PrevParent = tf.Parent;
 			_isSortingRequired = true;
 		}
@@ -57,23 +67,29 @@ void TransformsModule::AdjustGlobalPositions()
 	{
 		auto& tf = view.get<TransformComp>(ent);
 		if (tf.Parent != entt::null)
-			tf.GlobalPos = view.get<TransformComp>(tf.Parent).GlobalPos + tf.Pos;
+		{
+			auto& parentTf = view.get<TransformComp>(tf.Parent);
+			tf.GlobalPos = parentTf.GlobalPos + tf.Pos.Rotate(parentTf.Rot);
+			auto rot = tf.Rot;
+			rot.AddAroundWorld(parentTf.GlobalRot);
+			tf.GlobalRot = rot;
+		}
 		else
+		{
 			tf.GlobalPos = tf.Pos;
+			tf.GlobalRot = tf.Rot;
+		}
 	}
 }
 
 void TransformsModule::ResetTransformsIsChanged()
 {
 	auto view = _ecs->view<TransformComp>();
-	for (auto ent : view)
-	{
-		auto& tf = view.get<TransformComp>(ent);
-		tf.PrevPos = tf.Pos;
-		tf.PrevRot = tf.Rot;
-		tf.PrevScale = tf.Scale;
-		tf.PrevGlobalPos = tf.GlobalPos;
-	}
+	view.each([](TransformComp& tf)
+		{
+			tf.PrevPos = tf.Pos;
+			tf.ResetIsChanged();
+		});
 }
 
 void TransformsModule::OnTransformAddedOrRemoved(entt::registry& reg, entt::entity ent)

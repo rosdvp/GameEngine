@@ -8,6 +8,7 @@ void PlayerCameraSystem::Init()
 {
     _entCamera = _ecs->create();
     auto& tf = _ecs->emplace<TransformComp>(_entCamera);
+    tf.Rot.Set(0, 20, 0);
 
     auto& cameraComp = _ecs->emplace<RenderCameraComp>(_entCamera);
     cameraComp.IsOrthographic = false;

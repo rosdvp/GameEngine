@@ -64,7 +64,7 @@ void RenderShadowsDrawer::BeginFrame()
 		CreateShadowConstantBuffer();
 		shouldUpdateBuffer = true;
 	}
-	if (shouldUpdateBuffer || tf.IsPosOrRotOrScaleChanged() || light.IsChanged())
+	if (shouldUpdateBuffer || tf.IsChanged() || light.IsChanged())
 	{
 		XMVECTOR vEye = tf.Pos;
 		XMVECTOR vUp{ 0.0f, 1.0f, 0.0f, 0.0f };

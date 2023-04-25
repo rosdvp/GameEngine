@@ -13,7 +13,7 @@ namespace BlahEngine
 	public:
 		Rotation() = default;
 		Rotation(float roll, float pitch, float yaw);
-		Rotation(DirectX::XMVECTOR quaternion);
+		Rotation(const DirectX::XMVECTOR& quaternion);
 
 		Rotation(const Rotation& rot) = default;
 		Rotation(Rotation&& rot) = default;
@@ -26,7 +26,8 @@ namespace BlahEngine
 
 
 		DirectX::XMVECTOR GetQuaternion() const;
-		DirectX::XMVECTOR GetQuaternionInv() const;
+		const DirectX::XMVECTOR& GetQuaternionRef() const;
+		DirectX::XMFLOAT4 GetQuaternionFloat4() const;
 		Vector3 GetEuler() const;
 		float GetRoll() const;
 		float GetPitch() const;
@@ -36,15 +37,32 @@ namespace BlahEngine
 		void Set(float roll, float pitch, float yaw);
 
 		void AddAroundLocal(float roll, float pitch, float yaw);
+		void AddAroundLocal(const Rotation& rot);
 		void AddAroundWorld(float roll, float pitch, float yaw);
+		void AddAroundWorld(const Rotation& rot);
 
 
 		friend std::ostream& operator<<(std::ostream& os, const Rotation& r);
 
+		friend Rotation operator-(const Rotation& rot);
+
 	private:
-		float _roll = 0;
-		float _pitch = 0;
-		float _yaw = 0;
 		DirectX::XMVECTOR _q = DirectX::XMQuaternionIdentity();
+
+		void AddAroundLocal(DirectX::XMVECTOR q);
+		void AddAroundWorld(DirectX::XMVECTOR q);
 	};
 }
+
+
+template <>
+struct std::hash<BlahEngine::Rotation>
+{
+	std::size_t operator()(const BlahEngine::Rotation& rot) const noexcept
+	{
+		std::size_t h = 0;
+		auto& q = rot.GetQuaternionRef();
+		BlahEngine::HashCombine(h, q.m128_f32[0], q.m128_f32[1], q.m128_f32[2], q.m128_f32[3]);
+		return h;
+	}
+};

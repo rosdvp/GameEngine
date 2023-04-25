@@ -32,7 +32,7 @@ void RenderLightDrawer::BeginFrame()
 	{
 		auto [tf, light] = view.get(ent);
 
-		if (tf.IsPosOrRotOrScaleChanged() || light.IsChanged())
+		if (tf.IsChanged() || light.IsChanged())
 		{
 			UpdateLightConstantBuffer(tf, light);
 			light.ResetIsChanged();

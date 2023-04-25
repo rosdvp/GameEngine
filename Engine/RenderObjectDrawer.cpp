@@ -38,7 +38,7 @@ void RenderObjectDrawer::BeginFrame(const TransformComp& tf, RenderComp& render)
 		shouldUpdateTransform = true;
 		shouldUpdateMaterial = true;
 	}
-	if (shouldUpdateTransform || tf.IsPosOrRotOrScaleChanged())
+	if (shouldUpdateTransform || tf.IsChanged())
 	{
 		UpdateTransformConstantBuffer(tf, render);
 	}
@@ -133,7 +133,7 @@ void RenderObjectDrawer::UpdateTransformConstantBuffer(const TransformComp& tf, 
 		XMMatrixScaling(tf.Scale.X, tf.Scale.Y, tf.Scale.Z) *
 		//XMMatrixRotationRollPitchYaw(tf.Rot.X, tf.Rot.Y, tf.Rot.Z) *
 		//XMMatrixRotationRollPitchYaw(rot.X, rot.Y, rot.Z) *
-		XMMatrixRotationQuaternion(tf.Rot.GetQuaternion()) *
+		XMMatrixRotationQuaternion(tf.GlobalRot.GetQuaternion()) *
 		XMMatrixTranslation(tf.GlobalPos.X, tf.GlobalPos.Y, tf.GlobalPos.Z);
 
 	TransformConstantBufferData data =

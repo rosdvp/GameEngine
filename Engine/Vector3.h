@@ -3,6 +3,8 @@
 
 namespace BlahEngine
 {
+struct Rotation;
+
 struct Vector3
 {
 public:
@@ -21,13 +23,15 @@ public:
 	~Vector3();
 
 
-	float Length() const;
+	float GetLength() const;
 
 	Vector3 GetNorm() const;
 
 	Vector3 Rotate(float roll, float pitch, float yaw) const;
+	Vector3 Rotate(const Rotation& rot) const;
 	Vector3 Rotate(const DirectX::XMVECTOR& quaternion) const;
 
+	float GetMaxAxisValue() const;
 
 	operator DirectX::XMFLOAT3() const;
 	operator DirectX::XMFLOAT4() const;
@@ -69,11 +73,6 @@ struct std::hash<BlahEngine::Vector3>
 {
 	std::size_t operator()(const BlahEngine::Vector3& v) const noexcept
 	{
-		//std::size_t h1 = std::hash<float>{}(v.X);
-		//std::size_t h2 = std::hash<float>{}(v.Y);
-		//std::size_t h3 = std::hash<float>{}(v.Z);
-		//return ((h1 ^ (h2 << 1)) >> 1) ^ (h3 << 1);
-
 		std::size_t h = 0;
 		BlahEngine::HashCombine(h, v.X, v.Y, v.Z);
 		return h;

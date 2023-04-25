@@ -6,11 +6,18 @@ namespace BlahEngine
 {
 struct CollisionComp
 {
-	bool IsStatic = false;
+	enum ECollisionType
+	{
+		BoxCollision,
+		SphereCollision
+	};
 
-	Vector3 Size = { 1, 1, 1 };
+	bool IsStatic{ false };
+	ECollisionType Type{ BoxCollision };
+	Vector3 Size{ 1, 1, 1 };
 
-	DirectX::BoundingBox Box{};
+	DirectX::BoundingOrientedBox Box{};
+	DirectX::BoundingSphere Sphere{};
 	
 	std::vector<entt::entity> Collided;
 };

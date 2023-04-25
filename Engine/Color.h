@@ -71,17 +71,6 @@ struct std::hash<BlahEngine::Color>
 {
 	std::size_t operator()(const BlahEngine::Color& c) const noexcept
 	{
-		//using namespace std;
-		//
-		//size_t h1 = hash<float>{}(c.R);
-		//size_t h2 = hash<float>{}(c.G);
-		//size_t h3 = hash<float>{}(c.B);
-		//size_t h4 = hash<float>{}(c.A);
-		//
-		//size_t h = h1 ^ (h2 >> 1);
-		//
-		//return ((((h1 ^ (h2 << 1)) >> 1) ^ (h3 << 1)) >> 1) ^ (h4 << 1);
-
 		std::size_t h = 0;
 		BlahEngine::HashCombine(h, c.R, c.G, c.B, c.A);
 		return h;

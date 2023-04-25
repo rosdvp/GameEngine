@@ -22,14 +22,11 @@ void RenderImporter::ImportModel(std::string fileName, float scaleFactor, Render
 	const auto model = importer.ReadFile(fileName.data(),
 		aiProcess_Triangulate
 		| aiProcess_ConvertToLeftHanded
-		//| aiProcess_DropNormals
-		//| aiProcess_GenNormals
 		| aiProcess_GenSmoothNormals
-		//| aiProcess_FixInfacingNormals
 		| aiProcess_FindDegenerates
 		| aiProcess_FindInvalidData
 		| aiProcess_CalcTangentSpace
-		//| aiProcess_JoinIdenticalVertices
+		| aiProcess_JoinIdenticalVertices
 	);
 
 	if (model == nullptr)
@@ -37,6 +34,7 @@ void RenderImporter::ImportModel(std::string fileName, float scaleFactor, Render
 		Logger::Print("render module", ("failed to import (" + fileName + "), " + importer.GetErrorString()).data());
 		return;
 	}
+	
 
 	const auto mesh = model->mMeshes[0];
 	render.VerticesCount = mesh->mNumVertices;

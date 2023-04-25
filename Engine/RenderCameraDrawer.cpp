@@ -37,7 +37,7 @@ void RenderCameraDrawer::BeginFrame()
 	{
 		auto [tf, camera] = view.get<const TransformComp, RenderCameraComp>(entity);
 		
-		if (tf.IsPosOrRotOrScaleChanged() || camera.IsChanged())
+		if (tf.IsChanged() || camera.IsChanged())
 		{
 			UpdateCameraConstantBuffer(tf, camera);
 			camera.ResetIsChanged();

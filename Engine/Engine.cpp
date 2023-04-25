@@ -10,14 +10,14 @@ Engine::~Engine()
 {
 }
 
-bool Engine::Init()
+bool Engine::Init(int screenWidth, int screenHeight)
 {
 	_timeModule.Init();
 	_inputModule.Init();
 
 	WindowDesc windowDesc;
-	windowDesc.Width = 640; //854
-	windowDesc.Height = 480;
+	windowDesc.Width = screenWidth;
+	windowDesc.Height = screenHeight;
 	_window.Create(windowDesc);
 	_window.AttachInput(&_inputModule);
 	

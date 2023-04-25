@@ -9,7 +9,7 @@ Rotation::Rotation(float roll, float pitch, float yaw)
 	Set(roll, pitch, yaw);
 }
 
-Rotation::Rotation(XMVECTOR quaternion)
+Rotation::Rotation(const XMVECTOR& quaternion)
 {
 	_q = quaternion;
 }
@@ -29,9 +29,14 @@ XMVECTOR Rotation::GetQuaternion() const
 	return _q;
 }
 
-XMVECTOR Rotation::GetQuaternionInv() const
+const XMVECTOR& Rotation::GetQuaternionRef() const
 {
-	return XMQuaternionInverse(_q);
+	return _q;
+}
+
+XMFLOAT4 Rotation::GetQuaternionFloat4() const
+{
+	return { _q.m128_f32[0], _q.m128_f32[1], _q.m128_f32[2], _q.m128_f32[3] };
 }
 
 Vector3 Rotation::GetEuler() const
@@ -112,9 +117,11 @@ void Rotation::AddAroundLocal(float roll, float pitch, float yaw)
 		DEGREE_TO_RADIAN(yaw),
 		DEGREE_TO_RADIAN(roll)
 	);
-	q = XMQuaternionNormalize(q);
-	_q = XMQuaternionMultiply(q, _q);
-	_q = XMQuaternionNormalize(_q);
+	AddAroundLocal(XMQuaternionNormalize(q));
+}
+void Rotation::AddAroundLocal(const Rotation& rot)
+{
+	AddAroundLocal(rot.GetQuaternion());
 }
 
 void Rotation::AddAroundWorld(float roll, float pitch, float yaw)
@@ -124,7 +131,21 @@ void Rotation::AddAroundWorld(float roll, float pitch, float yaw)
 		DEGREE_TO_RADIAN(yaw),
 		DEGREE_TO_RADIAN(roll)
 	);
-	q = XMQuaternionNormalize(q);
+	AddAroundWorld(XMQuaternionNormalize(q));
+}
+void Rotation::AddAroundWorld(const Rotation& rot)
+{
+	AddAroundWorld(rot.GetQuaternion());
+}
+
+void Rotation::AddAroundLocal(XMVECTOR q)
+{
+	_q = XMQuaternionMultiply(q, _q);
+	_q = XMQuaternionNormalize(_q);
+}
+
+void Rotation::AddAroundWorld(XMVECTOR q)
+{
 	_q = XMQuaternionMultiply(_q, q);
 	_q = XMQuaternionNormalize(_q);
 }
@@ -138,4 +159,11 @@ std::ostream& BlahEngine::operator<<(std::ostream& os, const Rotation& r)
 			<< r._q.m128_f32[2] << ", "
 			<< r._q.m128_f32[3] << ", "
 			<< ")";
+}
+
+Rotation BlahEngine::operator-(const Rotation& rot)
+{
+	auto q = rot.GetQuaternion();
+	q.m128_f32[3] = -q.m128_f32[3];
+	return q;
 }

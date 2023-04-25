@@ -138,18 +138,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FreeCameraSystem.cpp" />
     <ClCompile Include="Katamary.cpp" />
     <ClCompile Include="LevelSystem.cpp" />
     <ClCompile Include="PlayerCameraSystem.cpp" />
-    <ClCompile Include="PlayerSystem.cpp" />
+    <ClCompile Include="PlayerMoveSystem.cpp" />
+    <ClCompile Include="CollectSystem.cpp" />
+    <ClCompile Include="SunLightSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FreeCameraSystem.h" />
     <ClInclude Include="LevelSystem.h" />
     <ClInclude Include="PlayerCameraSystem.h" />
     <ClInclude Include="PlayerComp.h" />
-    <ClInclude Include="PlayerSystem.h" />
+    <ClInclude Include="PlayerMoveSystem.h" />
+    <ClInclude Include="CollectSystem.h" />
+    <ClInclude Include="SunLightSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

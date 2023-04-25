@@ -21,7 +21,7 @@ public:
 	Engine();
 	~Engine();
 
-	bool Init();
+	bool Init(int screenWidth, int screenHeight);
 	void Run();
 
 	entt::registry& Ecs();
