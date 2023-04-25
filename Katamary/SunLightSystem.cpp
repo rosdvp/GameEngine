@@ -9,7 +9,7 @@ void SunLightSystem::Init()
 	_entLight = _ecs->create();
 
 	auto& tf = _ecs->emplace<TransformComp>(_entLight);
-	tf.Rot.Set(0, 20, 0);
+	tf.Rot.Set(0, 30, 0);
 	tf.Pos = { 0, 0, -10 };
 
 	auto& light = _ecs->emplace<RenderLightComp>(_entLight);

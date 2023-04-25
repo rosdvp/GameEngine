@@ -33,13 +33,12 @@ void LevelSystem::Init()
 	{
 		float scale = scaleBase + scaleStep * row;
 
-		float posY = 0.5f + scale / 2.0f;
-
 		for (int column = 0; column < columnsCount; column++)
 		{
 			float posX = (column - columnsCount / 2.0f) * (scale + spaceX);
 
-			CreateObstacle({ posX, posY, posZ }, { scale, scale, scale });
+			CreateCube({ posX, 0.5f, posZ }, {}, { scale, scale, scale });
+			//CreateDuck({ posX,  0.5f, posZ }, {}, scale);
 		}
 
 		posZ += scale + spaceZ;
@@ -47,7 +46,6 @@ void LevelSystem::Init()
 
 
 	CreateDuck({ -5, 0.5f, -5 }, { 0, 0, 0 }, 1.0f);
-	CreateObstacle({ 5, 1, -5 }, { 1, 1, 1 });
 }
 
 void LevelSystem::Run()
@@ -70,17 +68,19 @@ void LevelSystem::CreateGround()
 	GeometryRenderBuilder::BuildCube(render, Color::Grey());
 }
 
-entt::entity LevelSystem::CreateObstacle(Vector3 pos, Vector3 scale)
+entt::entity LevelSystem::CreateCube(const Vector3& pos, const Rotation& rot, const Vector3& scale)
 {
 	auto ent = _ecs->create();
 
 	auto& tf = _ecs->emplace<TransformComp>(ent);
 	tf.Pos = pos;
+	tf.Pos.Y += scale.Y / 2.0f;
+	tf.Rot = rot;
 	tf.Scale = scale;
 
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.ShaderId = RenderModule::EShaderId::SimpleLit;
-	render.Mat = MatPresetChrome;
+	render.Mat = MatPresetChrome; 
 	GeometryRenderBuilder::BuildCube(render, Color::Green());
 
 	auto& col = _ecs->emplace<CollisionComp>(ent);
@@ -103,11 +103,37 @@ void LevelSystem::CreateDuck(const Vector3& pos, const Rotation& rot, float scal
 	auto& render = _ecs->emplace<RenderComp>(ent);
 	render.ShaderId = RenderModule::EShaderId::Lit;
 	render.Mat = MatPresetChrome;
-	_engine->Render().ImportModel("./Models/duck2.obj", 1.0f, render);
-	_engine->Render().ImportTexture(L"./Models/duck.dds", render);
+	_engine->Render().ImportModel("./Models/duck/duck.obj", 1.0f, render);
+	_engine->Render().ImportTexture(L"./Models/duck/duck.dds", render);
 
 	auto& col = _ecs->emplace<CollisionComp>(ent);
 	col.Type = CollisionComp::BoxCollision;
 	col.IsStatic = true;
-	col.Size = { 0.4f, 0.5f, 0.7f };
+	col.Size = { 0.5f, 0.6f, 0.8f };
+}
+
+void LevelSystem::CreateModel(
+	const Vector3& pos, 
+	const Rotation& rot, 
+	float scale,
+	const std::string& pathToModel,
+	const std::wstring& pathToTexture)
+{
+	auto ent = _ecs->create();
+
+	auto& tf = _ecs->emplace<TransformComp>(ent);
+	tf.Pos = pos;
+	tf.Rot = rot;
+	tf.Scale = { scale, scale, scale };
+
+	auto& render = _ecs->emplace<RenderComp>(ent);
+	render.ShaderId = RenderModule::EShaderId::Lit;
+	render.Mat = MatPresetChrome;
+	_engine->Render().ImportModel(pathToModel, 1.0f, render);
+	_engine->Render().ImportTexture(pathToTexture, render);
+
+	auto& col = _ecs->emplace<CollisionComp>(ent);
+	col.Type = CollisionComp::BoxCollision;
+	col.IsStatic = true;
+	col.Size = { 1.0f, 1.0f, 1.0f };
 }

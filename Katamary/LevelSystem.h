@@ -14,7 +14,20 @@ private:
 
 	void CreateGround();
 
-	entt::entity CreateObstacle(BlahEngine::Vector3 pos, BlahEngine::Vector3 scale);
+	entt::entity CreateCube(
+		const BlahEngine::Vector3& pos, 
+		const BlahEngine::Rotation& rot, 
+		const BlahEngine::Vector3& scale
+	);
 
 	void CreateDuck(const BlahEngine::Vector3& pos, const BlahEngine::Rotation& rot, float scale);
+
+
+	void CreateModel(
+		const BlahEngine::Vector3& pos, 
+		const BlahEngine::Rotation& rot, 
+		float scale,
+		const std::string& pathToModel,
+		const std::wstring& pathToTexture
+	);
 };

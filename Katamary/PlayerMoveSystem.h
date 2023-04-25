@@ -13,6 +13,4 @@ private:
 
 	entt::entity _entPlayer = entt::null;
 	entt::entity _entCamera = entt::null;
-
-	BlahEngine::Vector3 _force;
 };

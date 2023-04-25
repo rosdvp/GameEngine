@@ -45,6 +45,7 @@ void PlayerMoveSystem::Run()
 
 	float deltaTime = _engine->Time().GetFrameDeltaSecs();
 
+	auto& player = _ecs->get<PlayerComp>(_entPlayer);
 	auto& playerTf = _ecs->get<TransformComp>(_entPlayer);
 	auto& cameraTf = _ecs->get<TransformComp>(_entCamera);
 
@@ -65,11 +66,11 @@ void PlayerMoveSystem::Run()
 		dir += right;
 	dir = dir.GetNorm();
 
-	_force += dir * MOVE_ACCEL * deltaTime;
+	player.Force += dir * MOVE_ACCEL * deltaTime;
 
-	playerTf.Pos += _force * deltaTime;
+	playerTf.Pos += player.Force * deltaTime;
 
-	auto deltaRot = _force * ROT_K / playerTf.Scale.X;
+	auto deltaRot = player.Force * ROT_K / playerTf.Scale.X;
 
 	playerTf.Rot.AddAroundWorld(-deltaRot.X, deltaRot.Z, 0);
 }

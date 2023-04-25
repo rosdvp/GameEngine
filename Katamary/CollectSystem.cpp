@@ -24,7 +24,10 @@ void CollectSystem::Run()
 			auto& objTf = _ecs->get<TransformComp>(entCollided);
 
 			if (objTf.Scale.GetLength() > maxScaleLength)
+			{
+				player.Force = {};
 				continue;
+			}
 
 			objTf.Parent = entPlayer;
 			_ecs->remove<CollisionComp>(entCollided);
