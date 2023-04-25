@@ -21,9 +21,10 @@ private:
 	);
 
 	void CreateDuck(const BlahEngine::Vector3& pos, const BlahEngine::Rotation& rot, float scale);
+	void CreateCar(const BlahEngine::Vector3& pos, const BlahEngine::Rotation& rot, float scale);
 
 
-	void CreateModel(
+	entt::entity CreateModel(
 		const BlahEngine::Vector3& pos, 
 		const BlahEngine::Rotation& rot, 
 		float scale,

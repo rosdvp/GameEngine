@@ -22,6 +22,9 @@ void RenderImporter::ImportModel(std::string fileName, float scaleFactor, Render
 	const auto model = importer.ReadFile(fileName.data(),
 		aiProcess_Triangulate
 		| aiProcess_ConvertToLeftHanded
+		//| aiProcess_DropNormals
+		//| aiProcess_FixInfacingNormals
+		//| aiProcess_GenNormals
 		| aiProcess_GenSmoothNormals
 		| aiProcess_FindDegenerates
 		| aiProcess_FindInvalidData

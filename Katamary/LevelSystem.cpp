@@ -45,7 +45,8 @@ void LevelSystem::Init()
 	}
 
 
-	CreateDuck({ -5, 0.5f, -5 }, { 0, 0, 0 }, 1.0f);
+	CreateDuck({ -5, 0.5f, -5 }, {}, 1.0f);
+	CreateCar({ 5.0f, 0.5f, -5.0f }, {}, 1.0f);
 }
 
 void LevelSystem::Run()
@@ -93,26 +94,19 @@ entt::entity LevelSystem::CreateCube(const Vector3& pos, const Rotation& rot, co
 
 void LevelSystem::CreateDuck(const Vector3& pos, const Rotation& rot, float scale)
 {
-	auto ent = _ecs->create();
-
-	auto& tf = _ecs->emplace<TransformComp>(ent);
-	tf.Pos = pos;
-	tf.Rot = rot;
-	tf.Scale = { scale, scale, scale };
-
-	auto& render = _ecs->emplace<RenderComp>(ent);
-	render.ShaderId = RenderModule::EShaderId::Lit;
-	render.Mat = MatPresetChrome;
-	_engine->Render().ImportModel("./Models/duck/duck.obj", 1.0f, render);
-	_engine->Render().ImportTexture(L"./Models/duck/duck.dds", render);
-
-	auto& col = _ecs->emplace<CollisionComp>(ent);
-	col.Type = CollisionComp::BoxCollision;
-	col.IsStatic = true;
+	auto ent = CreateModel(pos, rot, scale, "./Models/duck/duck.obj", L"./Models/duck/duck.dds");
+	auto& col = _ecs->get<CollisionComp>(ent);
 	col.Size = { 0.5f, 0.6f, 0.8f };
 }
 
-void LevelSystem::CreateModel(
+void LevelSystem::CreateCar(const Vector3& pos, const Rotation& rot, float scale)
+{
+	auto ent = CreateModel(pos, rot, scale, "./Models/car/car.obj", L"./Models/car/car.dds");
+	auto& col = _ecs->get<CollisionComp>(ent);
+	col.Size = { 0.6f, 0.6f, 1.7f };
+}
+
+entt::entity LevelSystem::CreateModel(
 	const Vector3& pos, 
 	const Rotation& rot, 
 	float scale,
@@ -136,4 +130,6 @@ void LevelSystem::CreateModel(
 	col.Type = CollisionComp::BoxCollision;
 	col.IsStatic = true;
 	col.Size = { 1.0f, 1.0f, 1.0f };
+
+	return ent;
 }
