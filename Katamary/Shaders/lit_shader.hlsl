@@ -95,8 +95,10 @@ float GetShadowK(float4 shadowMapPos)
     shadowMapPos.x = shadowMapPos.x / 2 + 0.5;
     shadowMapPos.y = shadowMapPos.y / -2 + 0.5;
 
+    float bias = 0.001f;
+
     float shadowMapDepth = ShadowMap.Sample(ShadowMapSampler, shadowMapPos.xy).r;
-    if (shadowMapDepth < shadowMapPos.z)
+    if (shadowMapDepth - bias < shadowMapPos.z)
         return 0;
 
     return 1;
