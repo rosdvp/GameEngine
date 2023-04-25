@@ -46,7 +46,7 @@ void LevelSystem::Init()
 	}
 
 
-	CreateDuck({ -5, 1.5f, -5 }, { 0, 0, 0 }, 1.0f);
+	CreateDuck({ -5, 0.5f, -5 }, { 0, 0, 0 }, 1.0f);
 	CreateObstacle({ 5, 1, -5 }, { 1, 1, 1 });
 }
 
@@ -109,5 +109,5 @@ void LevelSystem::CreateDuck(const Vector3& pos, const Rotation& rot, float scal
 	auto& col = _ecs->emplace<CollisionComp>(ent);
 	col.Type = CollisionComp::BoxCollision;
 	col.IsStatic = true;
-	col.Size = { 4, 10, 8 };
+	col.Size = { 0.4f, 0.5f, 0.7f };
 }

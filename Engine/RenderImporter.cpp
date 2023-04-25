@@ -72,6 +72,24 @@ void RenderImporter::ImportModel(std::string fileName, float scaleFactor, Render
 		render.Indices[i * 3 + 1] = face.mIndices[1];
 		render.Indices[i * 3 + 2] = face.mIndices[2];
 	}
+
+	
+	float maxLength = -1;
+	for (int i = 0; i < render.VerticesCount; i++)
+	{
+		auto pos = render.Vertices[i].Pos;
+		float length = std::sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
+		if (length > maxLength)
+			maxLength = length;
+	}
+
+	for (int i = 0; i < render.VerticesCount; i++)
+	{
+		auto& pos = render.Vertices[i].Pos;
+		pos.x /= maxLength;
+		pos.y /= maxLength;
+		pos.z /= maxLength;
+	}
 }
 
 void RenderImporter::ImportTexture(ID3D11Device* device, std::wstring fileName, RenderComp& render)
